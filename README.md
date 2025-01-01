@@ -9,7 +9,7 @@
 - siam456
 
 ## Project Description
-*Some interesting thing is going to be happened*
+*Some interesting thing is going to happen*
 
 ## Getting Started
 1. Clone the repository
