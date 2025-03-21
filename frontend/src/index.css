@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
+
+* {
+    font-family: Outfit;
+}
+
 a.active hr {
     display: block;
+}
+
+.prata-regular {
+    font-family: "Prata", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+@media(max-width:640px) {
+    a.active {
+        background-color: black;
+        color: white;
+    }
 }
