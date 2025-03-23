@@ -8,7 +8,7 @@ import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  const { products, currency, addToCart, backendUrl } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -22,11 +22,15 @@ const Product = () => {
 
   const fetchProductData = async () => {
     const product = products.find((item) => item._id === productId);
+    console.log(product);
     if (product) {
+      // console.log(product);
       setProductData(product);
       setImage(product.image[0]);
     }
   };
+  console.log("ProductData: ", productData);
+  console.log("ProductImage: ", image);
 
   const fetchReviews = async () => {
     // Simulated API call - replace with actual API endpoint
@@ -100,14 +104,18 @@ const Product = () => {
             {productData.image.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
-                src={item}
+                src={`${backendUrl}/${item.replace(/\\/g, "/")}`}
                 key={index}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink cursor-pointer"
               />
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
-            <img className="w-full h-auto" src={image} alt="" />
+            <img
+              className="w-full h-auto"
+              src={`${backendUrl}/${image.replace(/\\/g, "/")}`}
+              alt=""
+            />
           </div>
         </div>
 
@@ -128,7 +136,7 @@ const Product = () => {
           <div className="flex flex-col gap-4 my-8">
             <p>Select Size</p>
             <div className="flex gap-2">
-              {productData.sizes.map((item, index) => (
+              {productData.size.map((item, index) => (
                 <button
                   onClick={() => setSize(item)}
                   className={`border py-2 px-4 bg-gray-100 ${

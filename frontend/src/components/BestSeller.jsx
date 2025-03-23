@@ -9,12 +9,10 @@ const BestSeller = () => {
   const [bestSeller, setBestSeller] = useState([]);
 
   useEffect(() => {
-    console.log(products);
-    const bestProduct = products.filter((item) => item.bestseller);
-    console.log(bestProduct);
+    // console.log(products);
+    const bestProduct = products.filter((item) => item.bestSeller);
     setBestSeller(bestProduct.slice(0, 5));
-    console.log(bestSeller);
-  }, []);
+  }, [products]);
   return (
     <div className="my-10">
       <div className="text-center text-3xl py-8">
