@@ -1,6 +1,6 @@
 import { json } from "express";
 import asyncHandler from "express-async-handler";
-import productModal from "../models/productModal.js";
+import productModel from "../models/productModel.js";
 
 // function for add product
 const addProduct = asyncHandler(async (req, res) => {
@@ -40,9 +40,9 @@ const addProduct = asyncHandler(async (req, res) => {
       date: Date.now(),
     };
 
-    console.log(productData);
+    // console.log(productData);
 
-    const product = new productModal(productData);
+    const product = new productModel(productData);
     await product.save();
 
     res.status(200).json({ success: "true", message: "Product added" });
@@ -59,7 +59,7 @@ const addProduct = asyncHandler(async (req, res) => {
 // function for list product
 const listProduct = asyncHandler(async (req, res) => {
   try {
-    const products = await productModal.find({});
+    const products = await productModel.find({});
     res.status(200).json({
       success: "true",
       products,
@@ -76,7 +76,7 @@ const listProduct = asyncHandler(async (req, res) => {
 // function for remove product
 const removeProduct = asyncHandler(async (req, res) => {
   try {
-    await productModal.findByIdAndDelete(req.body.id);
+    await productModel.findByIdAndDelete(req.body.id);
     res.status(200).json({
       success: "true",
       message: "Product removed",
@@ -94,7 +94,7 @@ const removeProduct = asyncHandler(async (req, res) => {
 const singleProduct = asyncHandler(async (req, res) => {
   try {
     const { productId } = req.body;
-    const product = await productModal.findById(productId);
+    const product = await productModel.findById(productId);
     res.status(200).json({
       success: "true",
       product,

@@ -22,16 +22,17 @@ const login = asyncHandler(async (req, res) => {
           token: generateToken(User._id),
         });
       } else {
-        res.status(500).json({
+        res.status(200).json({
           error: "Password Incorrect",
+          message: "Password Incorrect",
         });
       }
     } else {
-      return res.json({ success: false, msg: "User doesn't Exist" });
+      return res.json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal server error",
     });
   }
@@ -46,17 +47,17 @@ const register = asyncHandler(async (req, res) => {
 
     const check = await user.findOne({ email });
     if (check) {
-      return res.json({ success: false, msg: "User already Exist" });
+      return res.json({ success: false, message: "User already Exist" });
     }
 
     //validating email & password
     if (!validator.isEmail(email)) {
-      return res.json({ success: false, msg: "Email is not valid" });
+      return res.json({ success: false, message: "Email is not valid" });
     }
     if (password.length < 8) {
       return res.json({
         success: false,
-        msg: "Password should be more than 8 character",
+        message: "Password should be more than 8 character",
       });
     }
 
