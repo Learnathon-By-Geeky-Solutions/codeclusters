@@ -8,7 +8,8 @@ import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart, backendUrl } = useContext(ShopContext);
+  const { products, currency, addToCart, backendUrl, token, navigate } =
+    useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -20,17 +21,18 @@ const Product = () => {
     username: "",
   });
 
+  console.log("object ", token);
   const fetchProductData = async () => {
     const product = products.find((item) => item._id === productId);
-    console.log(product);
+    // console.log(product);
     if (product) {
       // console.log(product);
       setProductData(product);
       setImage(product.image[0]);
     }
   };
-  console.log("ProductData: ", productData);
-  console.log("ProductImage: ", image);
+  // console.log("ProductData: ", productData);
+  // console.log("ProductImage: ", image);
 
   const fetchReviews = async () => {
     // Simulated API call - replace with actual API endpoint
@@ -56,7 +58,12 @@ const Product = () => {
       console.error("Error fetching reviews:", error);
     }
   };
-
+  const handleClick = () => {
+    addToCart(productData._id, size);
+    if (!token) {
+      navigate("/login");
+    }
+  };
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     const review = {
@@ -149,12 +156,25 @@ const Product = () => {
               ))}
             </div>
           </div>
-          <button
-            onClick={() => addToCart(productData._id, size)}
-            className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
-          >
-            ADD TO CART
-          </button>
+          <div className="relative group inline-block">
+            <button
+              disabled={!size}
+              onClick={handleClick}
+              className={`text-white text-sm my-8 px-8 py-3 
+    ${
+      size.length === 0
+        ? "bg-gray-400 cursor-not-allowed "
+        : "bg-black hover:bg-gray-700"
+    }`}
+            >
+              ADD TO CART
+              {!size && (
+                <span className="absolute w-full left-1/2 transform -translate-x-1/2 -top-1 bg-black text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                  Select size
+                </span>
+              )}
+            </button>
+          </div>
           <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% Original Product</p>

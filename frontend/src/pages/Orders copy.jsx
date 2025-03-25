@@ -5,13 +5,12 @@ import { useContext } from "react";
 import Title from "../components/Title";
 import axios from "axios";
 import { toast } from "react-toastify";
-import OrderTrackingModal from "../components/OrderTrackingModal";
 
 const Orders = () => {
   const { currency, token, backendUrl } = useContext(ShopContext);
 
   const [orderData, setOrderData] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+
   const loadOrderData = async () => {
     try {
       if (!token) {
@@ -41,10 +40,6 @@ const Orders = () => {
       console.log(error);
       toast.error(error.message);
     }
-  };
-  const handleClick = async (item) => {
-    loadOrderData();
-    setSelectedOrder(item);
   };
   useEffect(() => {
     loadOrderData();
@@ -95,18 +90,11 @@ const Orders = () => {
                 <p className="text-sm md:text-base">{item.status}</p>
               </div>
               <button
-                onClick={() => handleClick(item)}
+                onClick={loadOrderData}
                 className="border px-4 py-2 text-sm font-medium rounded-sm"
               >
                 Track Order
               </button>
-              {/* Show modal when an order is selected */}
-              {selectedOrder && (
-                <OrderTrackingModal
-                  order={selectedOrder}
-                  onClose={() => setSelectedOrder(null)}
-                />
-              )}
             </div>
           </div>
         ))}

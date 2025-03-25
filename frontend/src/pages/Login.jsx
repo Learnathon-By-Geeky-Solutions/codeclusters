@@ -3,14 +3,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link, useLocation } from "react-router-dom";
 
 const Login = () => {
+  const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
-
+  const [email, setEmail] = useState(location.state?.email || "");
+  console.log(email);
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
+    // email = e.target.email.value;
     const password = e.target.password.value;
     // console.log("Login:", { email, password });
     try {
@@ -83,6 +86,8 @@ const Login = () => {
             <input
               type="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Email"
               className="w-full p-2 px-3 border border-gray-800 "
@@ -95,9 +100,12 @@ const Login = () => {
               className="w-full p-2 border border-gray-800"
             />
             <div className="w-full flex justify-between">
-              <a href="#" className="text-sm text-gray-600 hover:underline">
+              <Link
+                to="/forgotPassword"
+                className="text-sm text-gray-600 hover:underline"
+              >
                 Forgot Password?
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setIsLogin(false)}

@@ -12,6 +12,7 @@ const Cart = () => {
     updateQuantity,
     navigate,
     backendUrl,
+    token,
   } = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
@@ -33,7 +34,11 @@ const Cart = () => {
       setCartData(tempData);
     }
   }, [cartItems, products]);
-
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token]);
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
@@ -60,7 +65,7 @@ const Cart = () => {
                   )}`}
                   alt=""
                 />
-                <p className="text-xs sm:text-g font-medium">
+                <div className="text-xs sm:text-g font-medium">
                   {productData.name}
                   <div className="flex items-center gap-5 mt-2">
                     <p>
@@ -71,7 +76,7 @@ const Cart = () => {
                       {item.size}
                     </p>
                   </div>
-                </p>
+                </div>
               </div>
               <input
                 onChange={(e) =>
@@ -104,8 +109,14 @@ const Cart = () => {
           <CartTotal />
           <div className="w-full text-end">
             <button
+              disabled={cartData.length === 0}
               onClick={() => navigate("/place-order")}
-              className="bg-black hover:bg-gray-700 text-white text-sm my-8 px-8 py-3"
+              className={`text-white text-sm my-8 px-8 py-3 
+    ${
+      cartData.length === 0
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-black hover:bg-gray-700"
+    }`}
             >
               CHECKOUT
             </button>

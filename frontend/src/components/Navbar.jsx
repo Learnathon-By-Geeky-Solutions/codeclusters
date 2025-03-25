@@ -18,13 +18,15 @@ const Navbar = () => {
     setToken,
     setCartItems,
   } = useContext(ShopContext);
-
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
     setCartItems({});
     navigate("/login");
   };
+  // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+  //   userName
+  // )}&size=512`;
   return (
     <div className="flex  items-center justify-between  py-5 font-medium">
       <Link to="/">
@@ -64,6 +66,7 @@ const Navbar = () => {
           {/* <Link to="/login"> */}{" "}
           <img
             onClick={() => (token ? null : navigate("/login"))}
+            // src={userName ? avatarUrl : assets.profile_icon}
             src={assets.profile_icon}
             alt=""
             className="w-5 cursor-pointer"

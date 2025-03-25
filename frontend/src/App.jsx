@@ -16,6 +16,10 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import { ToastContainer, toast } from "react-toastify";
+import VerifyPayment from "./pages/VerifyPayment";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyOTP from "./pages/VerifyOtp";
+import ResetPassword from "./pages/ResetPassword";
 const App = () => {
   return (
     <div className="px-3 sm:px-[2vw] md:px-[4vw] lg:px-[7vw]">
@@ -33,6 +37,10 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/verifyPayment" element={<VerifyPayment />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/verifyOtp" element={<VerifyOTP />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
       </Routes>
       <Footer />
     </div>
