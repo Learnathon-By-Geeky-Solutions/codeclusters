@@ -73,37 +73,37 @@ const verifyOTP = async (email, otp) => {
 };
 
 //reset password
-const resetPass = async (email, otp, newPassword) => {
+const resetPass = async (email, newPassword) => {
   try {
     if (newPassword.length < 8) {
       return {
         success: false,
-        msg: "Password should be more than 8 character",
+        message: "Password should be more than 8 character",
       };
     }
-    const c = await verifyOTP(email, otp);
+    // const c = await verifyOTP(email, otp);
 
-    if (c.valid) {
-      // Hash the new password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
+    // if (c.valid) {
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-      // Update user's password in the database
-      await user.findOneAndUpdate(
-        { email },
-        { password: hashedPassword },
-        { new: true }
-      );
+    // Update user's password in the database
+    await user.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
 
-      return {
-        success: true,
-        msg: "Password reset",
-      };
-    } else {
-      return {
-        error: c.message,
-      };
-    }
+    return {
+      success: true,
+      message: "Password reset",
+    };
+    // } else {
+    //   return {
+    //     error: c.message,
+    //   };
+    // }
   } catch (error) {
     console.log("Error in reset password function", error.message);
     return {
@@ -123,7 +123,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   //validating email & password
   if (!validator.isEmail(email)) {
-    return res.json({ success: false, msg: "Email is not valid" });
+    return res.json({ success: false, message: "Email is not valid" });
   }
   //checking user exist or not
   const User = await user.findOne({ email });
@@ -243,9 +243,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
           console.log("Email sent: " + info.response);
         }
       });
-      res.json({ message: "OTP sent successfully" });
+      res.json({ success: true, message: "OTP sent successfully" });
     } else {
-      return res.json({ success: false, msg: "User doesn't Exist" });
+      return res.json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in forgot password controller", error.message);
@@ -261,16 +261,16 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
   //validating email & password
   if (!validator.isEmail(email)) {
-    return res.json({ success: false, msg: "Email is not valid" });
+    return res.json({ success: false, message: "Email is not valid" });
   }
   //checking user exist or not
   const User = await user.findOne({ email });
   try {
     if (User) {
       const result = await verifyOTP(email, otp);
-      res.json(result);
+      res.json({ result });
     } else {
-      return res.json({ success: false, msg: "User doesn't Exist" });
+      return res.json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in reset password controller", error.message);
@@ -286,7 +286,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   //validating email & password
   if (!validator.isEmail(email)) {
-    return res.json({ success: false, msg: "Email is not valid" });
+    return res.json({ success: false, message: "Email is not valid" });
   }
   //checking user exist or not
   const User = await user.findOne({ email });
@@ -294,11 +294,11 @@ const resetPassword = asyncHandler(async (req, res) => {
   try {
     if (User) {
       //   console.log(email, otp, newPassword);
-      const result = await resetPass(email, otp, newPassword);
+      const result = await resetPass(email, newPassword);
 
       res.json(result);
     } else {
-      return res.json({ success: false, msg: "User doesn't Exist" });
+      return res.json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in reset password controller", error.message);
