@@ -1,11 +1,11 @@
+/* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
 
-// eslint-disable-next-line react/prop-types
 const ProductItem = ({ id, image, name, price }) => {
-  const { currency } = useContext(ShopContext);
+  const { currency, backendUrl } = useContext(ShopContext);
   //   console.log("id:", id);
   //   console.log("Name: ", name);
   //   console.log("Image: ", image);
@@ -16,7 +16,7 @@ const ProductItem = ({ id, image, name, price }) => {
       <div className="overflow-hidden">
         <img
           className="hover:scale-110 transition ease-in-out"
-          src={image}
+          src={`${backendUrl}/${image[0].replace(/\\/g, "/")}`}
           alt=""
         />
       </div>
