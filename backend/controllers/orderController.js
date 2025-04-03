@@ -17,7 +17,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
-
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     const orderData = {
       userId,
       items,
@@ -30,11 +34,7 @@ const placeOrder = async (req, res) => {
 
     const newOrder = new orderModel(orderData);
     await newOrder.save();
-    if (!mongoose.isValidObjectId(userId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid userId" });
-    }
+
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
     res.json({ success: true, message: "Order Placed" });
@@ -174,7 +174,9 @@ const updateStatus = async (req, res) => {
         .json({ success: false, message: "Invalid Order ID" });
     }
     if (typeof status !== "string" || !allowedStatuses.includes(status)) {
-      throw new Error("Invalid status value");
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status value" });
     }
     await orderModel.findByIdAndUpdate(orderId, { status });
     res.json({ success: true, message: "Status Updated" });

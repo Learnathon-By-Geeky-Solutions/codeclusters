@@ -41,11 +41,7 @@ const updateToCart = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid userId" });
     }
-    if (!mongoose.isValidObjectId(userId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid userId" });
-    }
+
     const userData = await user.findById(userId);
     let cartData = await userData.cartData;
     cartData[itemId][size] = quantity;
