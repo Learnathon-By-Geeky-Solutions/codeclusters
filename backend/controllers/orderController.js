@@ -30,7 +30,11 @@ const placeOrder = async (req, res) => {
 
     const newOrder = new orderModel(orderData);
     await newOrder.save();
-
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
     res.json({ success: true, message: "Order Placed" });
@@ -97,6 +101,12 @@ const placeOrderStripe = async (req, res) => {
 // verify Stripe
 const verifyStripe = async (req, res) => {
   const { userId, orderId, success } = req.body;
+  if (!mongoose.isValidObjectId(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+  if (!mongoose.isValidObjectId(orderId)) {
+    return res.status(400).json({ success: false, message: "Invalid orderId" });
+  }
   try {
     if (success === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
@@ -133,7 +143,11 @@ const allOrders = async (req, res) => {
 const userOrders = async (req, res) => {
   try {
     const { userId } = req.body;
-
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     const orders = await orderModel.find({ userId });
 
     res.json({ success: true, orders });
@@ -147,6 +161,21 @@ const userOrders = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body;
+    const allowedStatuses = [
+      "Order placed",
+      "Packing",
+      "Shipped",
+      "Out for delivery",
+      "Delivered",
+    ];
+    if (typeof orderId !== "string") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Order ID" });
+    }
+    if (typeof status !== "string" || !allowedStatuses.includes(status)) {
+      throw new Error("Invalid status value");
+    }
     await orderModel.findByIdAndUpdate(orderId, { status });
     res.json({ success: true, message: "Status Updated" });
   } catch (error) {
