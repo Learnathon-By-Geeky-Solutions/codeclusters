@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModels.js";
 import userModel from "../models/userModel.js";
+import mongoose from "mongoose";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 

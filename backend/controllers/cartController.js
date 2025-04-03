@@ -1,5 +1,5 @@
 import user from "../models/userModel.js";
-
+import mongoose from "mongoose";
 // add products to cart
 const addToCart = async (req, res) => {
   try {
