@@ -3,6 +3,7 @@ import upload from "../assets/image-upload.png";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+import DOMPurify from "dompurify";
 
 const Add = ({ token }) => {
   const [image1, setImage1] = useState(false);
@@ -80,12 +81,12 @@ const Add = ({ token }) => {
             <label htmlFor="image1" className="cursor-pointer">
               <img
                 className="w-20 border-dashed border-2 px-2 py-2"
-                src={!image1 ? upload : URL.createObjectURL(image1)}
+                src={!image1 ? upload : DOMPurify.sanitize(URL.createObjectURL(image1))}
                 alt=""
               />
               <input
                 type="file"
-                onChange={(e) => setImage1(e.target.files[0])}
+                onChange={(e) => handleFileChange(e, setImage1)}
                 id="image1"
                 hidden
               />
@@ -298,4 +299,13 @@ const Add = ({ token }) => {
   );
 };
 
-export default Add;
+  const handleFileChange = (e, setImage) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024) { // 5MB limit
+      setImage(file);
+    } else {
+      toast.error("Invalid file type or size. Please upload an image file less than 5MB.");
+    }
+  };
+
+  export default Add;
