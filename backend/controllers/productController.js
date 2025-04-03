@@ -57,19 +57,61 @@ const addProduct = asyncHandler(async (req, res) => {
 });
 
 // function for list product
+// const listProduct = asyncHandler(async (req, res) => {
+//   try {
+//     const products = await productModel.find({});
+//     res.status(200).json({
+//       success: "true",
+//       products,
+//     });
+//   } catch (error) {
+//     console.log("Error in listProduct controller", error.message);
+//     res.status(500).json({
+//       error: "Internal server error",
+//       message: "",
+//     });
+//   }
+// });
+
+// new api for pagenation
 const listProduct = asyncHandler(async (req, res) => {
   try {
-    const products = await productModel.find({});
+    const { page = 1, limit = 20, category, subCategory, sort } = req.query;
+    const skip = (page - 1) * limit;
+    let filter = {};
+
+    // Apply category filter if selected
+    if (category) {
+      filter.category = { $in: category.split(",") };
+    }
+
+    // Apply subcategory filter if selected
+    if (subCategory) {
+      filter.subCategory = { $in: subCategory.split(",") };
+    }
+
+    let sortOption = {};
+    if (sort === "lowHigh") sortOption.price = 1;
+    if (sort === "highLow") sortOption.price = -1;
+
+    const products = await productModel
+      .find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(parseInt(limit));
+    const totalProducts = await productModel.countDocuments(filter);
+    console.log(totalProducts);
+
     res.status(200).json({
-      success: "true",
+      success: true,
       products,
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: parseInt(page),
     });
   } catch (error) {
     console.log("Error in listProduct controller", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-      message: "",
-    });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -107,4 +149,45 @@ const singleProduct = asyncHandler(async (req, res) => {
   }
 });
 
-export { addProduct, listProduct, removeProduct, singleProduct };
+//function for search product
+
+const searchProducts = asyncHandler(async (req, res) => {
+  try {
+    const { page = 1, limit = 20, search } = req.query;
+    const skip = (page - 1) * limit;
+
+    if (!search) {
+      return res.json({ success: false, message: "Search query is empty" });
+    }
+
+    //search by product by name
+    const filter = { name: { $regex: search, $options: "i" } };
+    const totalProducts = await productModel.countDocuments(filter);
+    const products = await productModel
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.status(200).json({
+      success: true,
+      products,
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    console.log("Error in searchProducts controller", error.message);
+    res.status(500).json({
+      error: "Internal server error",
+      message: "Internal server error",
+    });
+  }
+});
+
+export {
+  addProduct,
+  listProduct,
+  removeProduct,
+  singleProduct,
+  searchProducts,
+};
