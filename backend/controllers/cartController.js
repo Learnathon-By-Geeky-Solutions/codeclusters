@@ -1,9 +1,15 @@
 import user from "../models/userModel.js";
-
+import mongoose from "mongoose";
 // add products to cart
 const addToCart = async (req, res) => {
   try {
     const { userId, itemId, size } = req.body;
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
+
     const userData = await user.findById(userId);
     let cartData = await userData.cartData;
     if (cartData[itemId]) {
@@ -30,6 +36,12 @@ const addToCart = async (req, res) => {
 const updateToCart = async (req, res) => {
   try {
     const { userId, itemId, size, quantity } = req.body;
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
+
     const userData = await user.findById(userId);
     let cartData = await userData.cartData;
     cartData[itemId][size] = quantity;
@@ -46,6 +58,11 @@ const updateToCart = async (req, res) => {
 const getUserCart = async (req, res) => {
   try {
     const { userId } = req.body;
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     const userData = await user.findById(userId);
     let cartData = await userData.cartData;
     let name = userData.name;

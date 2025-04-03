@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModels.js";
 import userModel from "../models/userModel.js";
+import mongoose from "mongoose";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 
@@ -17,7 +18,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
-
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     const orderData = {
       userId,
       items,
@@ -97,6 +102,12 @@ const placeOrderStripe = async (req, res) => {
 // verify Stripe
 const verifyStripe = async (req, res) => {
   const { userId, orderId, success } = req.body;
+  if (!mongoose.isValidObjectId(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+  if (!mongoose.isValidObjectId(orderId)) {
+    return res.status(400).json({ success: false, message: "Invalid orderId" });
+  }
   try {
     if (success === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
@@ -133,7 +144,11 @@ const allOrders = async (req, res) => {
 const userOrders = async (req, res) => {
   try {
     const { userId } = req.body;
-
+    if (!mongoose.isValidObjectId(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId" });
+    }
     const orders = await orderModel.find({ userId });
 
     res.json({ success: true, orders });
@@ -147,6 +162,23 @@ const userOrders = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body;
+    const allowedStatuses = [
+      "Order placed",
+      "Packing",
+      "Shipped",
+      "Out for delivery",
+      "Delivered",
+    ];
+    if (typeof orderId !== "string") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Order ID" });
+    }
+    if (typeof status !== "string" || !allowedStatuses.includes(status)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status value" });
+    }
     await orderModel.findByIdAndUpdate(orderId, { status });
     res.json({ success: true, message: "Status Updated" });
   } catch (error) {
