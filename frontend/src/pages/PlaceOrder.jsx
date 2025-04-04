@@ -1,9 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
-import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 import axios from "axios";
@@ -44,71 +43,67 @@ const PlaceOrder = () => {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    // console.log("SubmitHandler");
-
-    try {
-      let orderItems = [];
-      for (const items in cartItems) {
-        for (const item in cartItems[items]) {
-          if (cartItems[items][item] > 0) {
-            const itemInfo = structuredClone(
-              products.find((product) => product._id === items)
-            );
-            // console.log(itemInfo);
-            if (itemInfo) {
-              itemInfo.size = item;
-
-              itemInfo.quantity = cartItems[items][item];
-
-              orderItems.push(itemInfo);
-            }
+  const buildOrderItems = (cartItems, products) => {
+    const orderItems = [];
+    for (const productId in cartItems) {
+      for (const size in cartItems[productId]) {
+        if (cartItems[productId][size] > 0) {
+          const product = structuredClone(
+            products.find((p) => p._id === productId)
+          );
+          if (product) {
+            product.size = size;
+            product.quantity = cartItems[productId][size];
+            orderItems.push(product);
           }
         }
       }
-      let orderData = {
+    }
+    return orderItems;
+  };
+  const placeCODOrder = async (orderData, token) => {
+    const res = await axios.post(backendUrl + "/api/order/place", orderData, {
+      headers: { token },
+    });
+    return res.data;
+  };
+
+  const placeStripeOrder = async (orderData, token) => {
+    const res = await axios.post(backendUrl + "/api/order/stripe", orderData, {
+      headers: { token },
+    });
+    return res.data;
+  };
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const orderItems = buildOrderItems(cartItems, products);
+      const orderData = {
         address: formData,
         items: orderItems,
         amount: getCartAmount() + deliver_fee,
       };
 
-      switch (method) {
-        //api call for cod
-        case "cod": {
-          const res = await axios.post(
-            backendUrl + "/api/order/place",
-            orderData,
-            { headers: { token } }
-          );
-          if (res.data.success) {
-            setCartItems({});
-            navigate("/orders");
-          } else {
-            toast.error(res.data.message);
-          }
-          break;
-        }
+      let response;
+      if (method === "cod") {
+        response = await placeCODOrder(orderData, token);
+      } else if (method === "stripe") {
+        response = await placeStripeOrder(orderData, token);
+      }
 
-        case "stripe": {
-          const res = await axios.post(
-            backendUrl + "/api/order/stripe",
-            orderData,
-            { headers: { token } }
-          );
-          if (res.data.success) {
-            const { session_url } = res.data;
-            window.location.replace(session_url);
-          } else toast.error(res.data.message);
-          break;
+      if (response?.success) {
+        if (method === "stripe") {
+          window.location.replace(response.session_url);
+        } else {
+          setCartItems({});
+          navigate("/orders");
         }
-
-        default:
-          break;
+      } else {
+        toast.error(response?.message || "Unknown error");
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+      console.error(error);
+      toast.error(error.message || "Something went wrong");
     }
   };
 
@@ -221,7 +216,7 @@ const PlaceOrder = () => {
         <div className="mt-12">
           <Title text1={"PAYMENT"} text2={"METHOD"} />
           <div className="flex gap-3 flex-col lg:flex-row">
-            <div
+            <button
               onClick={() => setMethod("stripe")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -236,8 +231,8 @@ const PlaceOrder = () => {
                 src={assets.stripe_logo}
                 alt=""
               />
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => setMethod("ssl")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -247,8 +242,8 @@ const PlaceOrder = () => {
                 }`}
               ></p>
               <img className="h-8 mx-4" src={assets.ssl_logo} alt="" />
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => setMethod("cod")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -260,7 +255,7 @@ const PlaceOrder = () => {
               <p className=" text-gray-500 text-sm font-medium mx-4">
                 CASH ON DELIVERY
               </p>
-            </div>
+            </button>
           </div>
 
           <div className="w-full text-end mt-8">

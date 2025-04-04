@@ -19,7 +19,6 @@ orderRouter.post("/status", adminAuth, updateStatus);
 //payment features
 orderRouter.post("/place", userAuth, placeOrder);
 orderRouter.post("/stripe", userAuth, placeOrderStripe);
-// orderRouter.post("/ssl", userAuth, placeOrder);
 
 //user feature
 orderRouter.post("/userorders", userAuth, userOrders);
