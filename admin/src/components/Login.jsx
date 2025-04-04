@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState("");
@@ -26,7 +27,9 @@ const Login = ({ setToken }) => {
       toast.error(error.message);
     }
   };
-
+  Login.propTypes = {
+    setToken: PropTypes.string.isRequired,
+  };
   return (
     <div className="min-h-screen flex items-center justify-center w-full">
       <div className="bg-white shadow-md rounded-lg px-8 py-6 max-w-md">

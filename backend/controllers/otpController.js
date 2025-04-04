@@ -81,10 +81,7 @@ const resetPass = async (email, newPassword) => {
         message: "Password should be more than 8 character",
       };
     }
-    // const c = await verifyOTP(email, otp);
 
-    // if (c.valid) {
-    // Hash the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
@@ -99,11 +96,6 @@ const resetPass = async (email, newPassword) => {
       success: true,
       message: "Password reset",
     };
-    // } else {
-    //   return {
-    //     error: c.message,
-    //   };
-    // }
   } catch (error) {
     console.log("Error in reset password function", error.message);
     return {
@@ -282,7 +274,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
 //route for resetPass
 const resetPassword = asyncHandler(async (req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { email, newPassword } = req.body;
 
   //validating email & password
   if (!validator.isEmail(email)) {
@@ -290,10 +282,9 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
   //checking user exist or not
   const User = await user.findOne({ email });
-  //   console.log(User);
+
   try {
     if (User) {
-      //   console.log(email, otp, newPassword);
       const result = await resetPass(email, newPassword);
 
       res.json(result);

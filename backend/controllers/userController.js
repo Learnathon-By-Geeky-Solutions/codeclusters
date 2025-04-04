@@ -3,7 +3,6 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import user from "../models/userModel.js";
 import generateToken from "../utils/generateJWT.js";
-import { generateOTP, storeOTP } from "./otpController.js";
 
 //route for login
 const login = asyncHandler(async (req, res) => {

@@ -1,4 +1,3 @@
-import { json } from "express";
 import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
 
@@ -15,10 +14,10 @@ const addProduct = asyncHandler(async (req, res) => {
       bestSeller,
     } = req.body;
 
-    const image1 = req.files.image1 && req.files.image1[0];
-    const image2 = req.files.image2 && req.files.image2[0];
-    const image3 = req.files.image3 && req.files.image3[0];
-    const image4 = req.files.image4 && req.files.image4[0];
+    const image1 = req.files.image1?.[0];
+    const image2 = req.files.image2?.[0];
+    const image3 = req.files.image3?.[0];
+    const image4 = req.files.image4?.[0];
 
     const images = [image1, image2, image3, image4].filter(
       (item) => item !== undefined
@@ -40,14 +39,10 @@ const addProduct = asyncHandler(async (req, res) => {
       date: Date.now(),
     };
 
-    // console.log(productData);
-
     const product = new productModel(productData);
     await product.save();
 
     res.status(200).json({ success: "true", message: "Product added" });
-
-    // console.log(imagesUrl);
   } catch (error) {
     console.log("Error in addProduct controller", error.message);
     res.status(500).json({
@@ -126,7 +121,6 @@ const removeProduct = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log("Error in removeProduct controller", error.message);
     res.status(500).json({
-      error: "Internal server error",
       error: "Internal server error",
     });
   }
