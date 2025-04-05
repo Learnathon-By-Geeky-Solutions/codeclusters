@@ -55,10 +55,10 @@ const List = ({ token }) => {
           <b className="text-center">Action</b>
         </div>
 
-        {list.map((item, index) => (
+        {list.map((item) => (
           <div
             className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 gap-2 bg-gray-100 text-sm"
-            key={index}
+            key={item._id}
           >
             <img
               className="w-12"
@@ -71,12 +71,12 @@ const List = ({ token }) => {
               {currency}
               {item.price}
             </p>
-            <p
+            <button
               onClick={() => removeProduct(item._id)}
-              className="text-center text-white w-[25%] bg-gray-700 md:text-center md:w-full cursor-pointer hover:bg-red-700 md:text-white px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
+              className="text-center text-white w-[25%] bg-red-500 md:text-center md:w-full cursor-pointer hover:bg-red-700 md:text-white px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
             >
               X
-            </p>
+            </button>
           </div>
         ))}
       </div>
