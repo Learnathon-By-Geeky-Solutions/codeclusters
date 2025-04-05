@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  //   const [message, setMessage] = useState("");
-  //   const [error, setError] = useState("");
+
   const { navigate, backendUrl, token } = useContext(ShopContext);
 
   const handleSubmit = async (e) => {
@@ -22,9 +21,7 @@ const ForgotPassword = () => {
         setTimeout(() => {
           navigate("/verifyOtp", { state: { email } }); // Navigate with state
         }, 2000);
-        // console.log("object");
       } else {
-        // setError(res.data.message);
         toast.error(res.data.message);
       }
     } catch (error) {
@@ -44,7 +41,9 @@ const ForgotPassword = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Forgot Password</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Email</label>
+            <label htmlFor="email" className="block text-gray-700 mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -52,10 +51,10 @@ const ForgotPassword = () => {
               className="w-full p-2 border border-gray-800"
               placeholder="Enter your email"
               required
+              id="email"
             />
           </div>
-          {/* {message && <p className="text-green-500 text-center">{message}</p>}
-          {error && <p className="text-red-500 text-center">{error}</p>} */}
+
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded"

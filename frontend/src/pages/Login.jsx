@@ -13,9 +13,9 @@ const Login = () => {
   console.log(email);
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    // email = e.target.email.value;
+
     const password = e.target.password.value;
-    // console.log("Login:", { email, password });
+
     try {
       const res = await axios.post(backendUrl + "/api/user/login", {
         email,
@@ -56,7 +56,6 @@ const Login = () => {
           setToken(res.data.token);
           localStorage.setItem("token", res.data.token);
         } else toast.error(res.data.message);
-        // console.log("Signup:", { name, email, password, confirmPassword });
       } else toast.error("Password doesn't match");
     } catch (error) {
       console.log(error);
@@ -162,9 +161,12 @@ const Login = () => {
               className="w-full p-2 border border-gray-800"
             />
             <div className="w-full flex justify-between">
-              <a href="#" className="text-sm text-gray-600 hover:underline">
+              <Link
+                to="/forgotPassword"
+                className="text-sm text-gray-600 hover:underline"
+              >
                 Forgot Password?
-              </a>
+              </Link>
               {/* <span className="text-sm text-gray-600"></span> */}
               <button
                 type="button"

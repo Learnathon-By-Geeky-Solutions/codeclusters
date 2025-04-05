@@ -24,15 +24,12 @@ const Product = () => {
   console.log("object ", token);
   const fetchProductData = async () => {
     const product = products.find((item) => item._id === productId);
-    // console.log(product);
+
     if (product) {
-      // console.log(product);
       setProductData(product);
       setImage(product.image[0]);
     }
   };
-  // console.log("ProductData: ", productData);
-  // console.log("ProductImage: ", image);
 
   const fetchReviews = async () => {
     // Simulated API call - replace with actual API endpoint
@@ -108,13 +105,19 @@ const Product = () => {
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.5%] w-full">
-            {productData.image.map((item, index) => (
-              <img
+            {productData.image.map((item) => (
+              <button
                 onClick={() => setImage(item)}
-                src={`${backendUrl}/${item.replace(/\\/g, "/")}`}
-                key={index}
-                className="w-[24%] sm:w-full sm:mb-3 flex-shrink cursor-pointer"
-              />
+                type="button"
+                key={item._id}
+                className="p-0 bg-transparent border-0"
+              >
+                <img
+                  alt="productPhoto"
+                  src={`${backendUrl}/${item.replace(/\\/g, "/")}`}
+                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink cursor-pointer"
+                />
+              </button>
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
@@ -149,7 +152,7 @@ const Product = () => {
                   className={`border py-2 px-4 bg-gray-100 ${
                     item === size ? "border-orange-500" : ""
                   }`}
-                  key={index}
+                  key={item._id}
                 >
                   {item}
                 </button>
@@ -247,19 +250,24 @@ const Product = () => {
                   />
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <img
+                      <button
+                        type="button"
+                        className="p-0 bg-transparent border-0"
                         key={star}
-                        src={
-                          star <= newReview.rating
-                            ? assets.star_icon
-                            : assets.star_dull_icon
-                        }
                         onClick={() =>
                           setNewReview({ ...newReview, rating: star })
                         }
-                        className="w-6 cursor-pointer"
-                        alt=""
-                      />
+                      >
+                        <img
+                          src={
+                            star <= newReview.rating
+                              ? assets.star_icon
+                              : assets.star_dull_icon
+                          }
+                          className="w-6 cursor-pointer"
+                          alt=""
+                        />
+                      </button>
                     ))}
                   </div>
                   <textarea

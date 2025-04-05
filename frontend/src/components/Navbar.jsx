@@ -4,11 +4,6 @@ import React, { useContext, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
-// import logo from "../assets/logo.png";
-// import search from "../assets/search.png";
-// import profile from "../assets/userProfile.png";
-// import cart from "../assets/cart.png";
-// import menu from "../assets/menuIcon.png";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -26,9 +21,7 @@ const Navbar = () => {
     setCartItems({});
     navigate("/login");
   };
-  // const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-  //   userName
-  // )}&size=512`;
+
   return (
     <div className="flex  items-center justify-between  py-5 font-medium">
       <Link to="/">
@@ -54,43 +47,49 @@ const Navbar = () => {
       </ul>
 
       <div className="flex item-center gap-6">
-        <Link to="/Collection">
+        <Link to="/Collection" onClick={() => setShowSearch(true)}>
           {" "}
-          <img
-            onClick={() => setShowSearch(true)}
-            src={assets.search_icon}
-            alt=""
-            className="w-5 cursor-pointer"
-          />
+          <img src={assets.search_icon} alt="" className="w-5 cursor-pointer" />
         </Link>
 
         <div className="group relative">
           {/* <Link to="/login"> */}{" "}
-          <img
+          <button
+            type="button"
             onClick={() => (token ? null : navigate("/login"))}
-            // src={userName ? avatarUrl : assets.profile_icon}
-            src={assets.profile_icon}
-            alt=""
-            className="w-5 cursor-pointer"
-          />
+            className="p-0 border-none bg-transparent"
+          >
+            <img
+              src={assets.profile_icon}
+              alt=""
+              className="w-5 cursor-pointer"
+            />
+          </button>
           {/* </Link> */}
           {/**DropDOwn */}
           {token && (
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
               <div className="flex flex-col w-36 py-2 text-center bg-slate-100 text-gray-700">
-                <p className="cursor-pointer hover:bg-gray-300 py-1">Profile</p>
-                <p
+                <button
+                  type="button"
+                  className="cursor-pointer hover:bg-gray-300 py-1 bg-transparent border-none w-full"
+                >
+                  Profile
+                </button>
+                <button
                   onClick={() => navigate("/orders")}
-                  className="cursor-pointer hover:bg-gray-300 py-1"
+                  type="button"
+                  className="cursor-pointer hover:bg-gray-300 py-1 bg-transparent border-none w-full"
                 >
                   Orders
-                </p>
-                <p
+                </button>
+                <button
                   onClick={logout}
-                  className="cursor-pointer hover:bg-gray-300 py-1"
+                  type="button"
+                  className="cursor-pointer hover:bg-gray-300 py-1 bg-transparent border-none w-full"
                 >
                   Logout
-                </p>
+                </button>
               </div>
             </div>
           )}
@@ -101,16 +100,21 @@ const Navbar = () => {
             alt=""
             className="w-5 min-w-5 cursor-pointer"
           />
-          <p className="absolute right-[-4px] bottom-[-4px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[7px]">
+          <p className="absolute right-[-2px] bottom-[-2px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[7px]">
             {getCartCount()}
           </p>
         </Link>
-        <img
+        <button
+          type="button"
           onClick={() => setVisible(true)}
-          src={assets.menu_icon}
-          alt=""
-          className="w-5 cursor-pointer sm:hidden"
-        />
+          className="p-0 border-none bg-transparent sm:hidden"
+        >
+          <img
+            src={assets.menu_icon}
+            alt=""
+            className="w-5 cursor-pointer sm:hidden"
+          />
+        </button>
       </div>
       {/*Sidebar menu*/}
       <div
@@ -120,13 +124,18 @@ const Navbar = () => {
       >
         <div className="flex flex-col text-gray-600">
           <div className="flex items-center gap-4 p-3 cursor-pointer">
-            <img
+            <button
+              type="button"
               onClick={() => setVisible(false)}
-              className="h-4 rotate-180"
-              src={assets.dropdown_icon}
-              alt=""
-            />
-            <p>Back</p>
+              className="p-0 border-none bg-transparent flex items-center gap-4 w-full"
+            >
+              <img
+                className="h-4 rotate-180"
+                src={assets.dropdown_icon}
+                alt="Go Back"
+              />
+              <span>Back</span>
+            </button>
           </div>
 
           <NavLink

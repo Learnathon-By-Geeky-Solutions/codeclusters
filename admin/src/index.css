@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 * {
-  font-family: Outfit;
+  font-family: "Outfit", sans-serif;
 }
 
 .active {
@@ -22,8 +22,3 @@ textarea {
   outline-color: #708ec6;
   border-radius: 4px;
 }
-
-/* input[type="number"] {
-  pointer-events: auto;
-  user-select: text;
-} */

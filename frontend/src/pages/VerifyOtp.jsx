@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
-  //   const [message, setMessage] = useState("");
-  //   const [error, setError] = useState("");
+
   const location = useLocation();
   const { navigate, backendUrl } = useContext(ShopContext);
 
@@ -31,7 +30,6 @@ const VerifyOTP = () => {
         toast.error(res.data.result.message);
       }
     } catch (error) {
-      //   setError("Something went wrong. Please try again.");
       console.log(error);
       toast.error(error.message);
     }
@@ -48,7 +46,9 @@ const VerifyOTP = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Verify OTP</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">OTP</label>
+            <label htmlFor="otp" className="block text-gray-700 mb-2">
+              OTP
+            </label>
             <input
               type="text"
               value={otp}
@@ -58,8 +58,7 @@ const VerifyOTP = () => {
               required
             />
           </div>
-          {/* {message && <p className="text-green-500 text-center">{message}</p>}
-          {error && <p className="text-red-500 text-center">{error}</p>} */}
+
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded"

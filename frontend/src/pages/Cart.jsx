@@ -46,14 +46,13 @@ const Cart = () => {
       </div>
 
       <div>
-        {cartData.map((item, index) => {
+        {cartData.map((item) => {
           const productData = products.find(
             (product) => product._id === item._id
           );
-          // console.log(productData);
           return (
             <div
-              key={index}
+              key={item._id}
               className="py-4 border-t text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
             >
               <div className="flex items-start gap-6">
@@ -93,12 +92,17 @@ const Cart = () => {
                 min={1}
                 defaultValue={item.quantity}
               />
-              <img
+              <button
+                type="button"
                 onClick={() => updateQuantity(item._id, item.size, 0)}
-                className="w-4 mr-4 sm:w-5 cursor-pointer"
-                src={assets.bin_icon}
-                alt=""
-              />
+                className="p-0 bg-transparent border-none"
+              >
+                <img
+                  className="w-4 mr-4 sm:w-5 cursor-pointer"
+                  src={assets.bin_icon}
+                  alt=""
+                />
+              </button>
             </div>
           );
         })}
