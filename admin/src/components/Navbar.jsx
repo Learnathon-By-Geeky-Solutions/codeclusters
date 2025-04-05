@@ -1,7 +1,11 @@
 import React from "react";
 import logo from "../assets/logo.png";
+import PropTypes from "prop-types";
 
 const Navbar = ({ setToken }) => {
+  Navbar.propTypes = {
+    setToken: PropTypes.string.isRequired,
+  };
   return (
     <div className="flex items-center py-2 px-[4%] justify-between">
       <img className="w-[max(5%,20px)] " src={logo} alt="" />

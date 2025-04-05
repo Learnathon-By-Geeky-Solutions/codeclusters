@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const SearchBar = () => {
   const { searchQuery, setSearchQuery, showSearch, setShowSearch } =
@@ -15,7 +15,6 @@ const SearchBar = () => {
       setVisible(true);
     } else {
       setVisible(false);
-      // Navigate("/Collection");
     }
   }, [location]);
   return showSearch && visible ? (
@@ -30,12 +29,17 @@ const SearchBar = () => {
         />
         <img className="w-4" src={assets.search_icon} alt="" />
       </div>
-      <img
+      <button
+        className="p-0 border-none bg-transparent"
+        type="button"
         onClick={() => setShowSearch(false)}
-        className="inline w-3 cursor-pointer"
-        src={assets.cross_icon}
-        alt=""
-      />
+      >
+        <img
+          className="inline w-3 cursor-pointer"
+          src={assets.cross_icon}
+          alt=""
+        />
+      </button>
     </div>
   ) : null;
 };

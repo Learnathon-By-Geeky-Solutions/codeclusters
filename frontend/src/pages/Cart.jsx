@@ -50,7 +50,6 @@ const Cart = () => {
           const productData = products.find(
             (product) => product._id === item._id
           );
-          // console.log(productData);
           return (
             <div
               key={index}
@@ -93,12 +92,17 @@ const Cart = () => {
                 min={1}
                 defaultValue={item.quantity}
               />
-              <img
+              <button
+                type="button"
                 onClick={() => updateQuantity(item._id, item.size, 0)}
-                className="w-4 mr-4 sm:w-5 cursor-pointer"
-                src={assets.bin_icon}
-                alt=""
-              />
+                className="p-0 bg-transparent border-none"
+              >
+                <img
+                  className="w-4 mr-4 sm:w-5 cursor-pointer"
+                  src={assets.bin_icon}
+                  alt=""
+                />
+              </button>
             </div>
           );
         })}

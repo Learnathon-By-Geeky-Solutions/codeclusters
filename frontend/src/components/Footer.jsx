@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -15,18 +16,18 @@ const Footer = () => {
               development.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-gray-700 transition-colors">
+              <Link to="#" className="hover:text-gray-700 transition-colors">
                 <Github className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-700 transition-colors">
+              </Link>
+              <Link to="#" className="hover:text-gray-700 transition-colors">
                 <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-700 transition-colors">
+              </Link>
+              <Link to="#" className="hover:text-gray-700 transition-colors">
                 <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-gray-700 transition-colors">
+              </Link>
+              <Link to="#" className="hover:text-gray-700 transition-colors">
                 <Mail className="w-5 h-5" />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -35,24 +36,30 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
             <ul className="">
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link
+                  to="/about"
+                  className="hover:text-gray-700 transition-colors"
+                >
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link to="#" className="hover:text-gray-700 transition-colors">
                   Services
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link to="#" className="hover:text-gray-700 transition-colors">
                   Projects
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link
+                  to="/contact"
+                  className="hover:text-gray-700 transition-colors"
+                >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -62,14 +69,14 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-2">Get in touch</h3>
             <ul className="">
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link to="#" className="hover:text-gray-700 transition-colors">
                   01700000000
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-700 transition-colors">
+                <Link to="#" className="hover:text-gray-700 transition-colors">
                   contact@mail.com
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

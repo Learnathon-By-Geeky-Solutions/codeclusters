@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { backendUrl, currency } from "../App";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const List = ({ token }) => {
   const [list, setList] = useState([]);
@@ -39,7 +40,9 @@ const List = ({ token }) => {
   useEffect(() => {
     fetchList();
   }, []);
-
+  List.propTypes = {
+    token: PropTypes.string.isRequired,
+  };
   return (
     <>
       <p className="mb-2">All Products List</p>

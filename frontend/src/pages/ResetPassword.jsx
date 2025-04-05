@@ -51,7 +51,9 @@ const ResetPassword = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Reset Password</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">New Password</label>
+            <label htmlFor="newPassword" className="block text-gray-700 mb-2">
+              New Password
+            </label>
             <input
               type="password"
               value={newPassword}
@@ -62,7 +64,10 @@ const ResetPassword = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">
+            <label
+              htmlFor="confirmNewPassword"
+              className="block text-gray-700 mb-2"
+            >
               Confirm New Password
             </label>
             <input
@@ -74,8 +79,7 @@ const ResetPassword = () => {
               required
             />
           </div>
-          {/* {message && <p className="text-green-500 text-center">{message}</p>}
-          {error && <p className="text-red-500 text-center">{error}</p>} */}
+
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded"

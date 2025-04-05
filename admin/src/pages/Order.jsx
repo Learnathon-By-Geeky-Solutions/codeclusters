@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import PropTypes from "prop-types";
 import { backendUrl, currency } from "../App";
 import { toast } from "react-toastify";
 import parcel_icon from "../assets/parcel.png";
@@ -47,14 +46,17 @@ const Order = ({ token }) => {
   useEffect(() => {
     fetchAllOrders();
   }, [token]);
+  Order.propTypes = {
+    token: PropTypes.string.isRequired,
+  };
   return (
     <div>
       <h3>Order Page</h3>
       <div>
-        {orders.map((order, index) => (
+        {orders.map((order) => (
           <div
             className="grid gird-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] md:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border border-gray-200 p-5 md:my-4 text-xs sm:text-sm text-gray-700"
-            key={index}
+            key={order._id}
           >
             <img className="w-12" src={parcel_icon} alt="" />
             <div>
@@ -62,13 +64,13 @@ const Order = ({ token }) => {
                 {order.items.map((item, index) => {
                   if (index === order.items.length - 1) {
                     return (
-                      <p className="py-0.5" key={index}>
+                      <p className="py-0.5" key={item._id}>
                         {item.name} x {item.quantity} <span>{item.size}</span>
                       </p>
                     );
                   } else {
                     return (
-                      <p className="py-0.5" key={index}>
+                      <p className="py-0.5" key={item._id}>
                         {item.name} x {item.quantity} <span>{item.size},</span>
                       </p>
                     );
