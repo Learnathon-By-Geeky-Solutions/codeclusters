@@ -3,6 +3,7 @@ import upload from "../assets/image-upload.png";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+
 import PropTypes from "prop-types";
 
 const Add = ({ token }) => {
