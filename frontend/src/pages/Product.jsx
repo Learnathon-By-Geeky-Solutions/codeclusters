@@ -159,7 +159,7 @@ const Product = () => {
         <div className="flex-1">
           <h1 className="flex flex-row gap-1 items-center font-medium text-2xl mt-2">
             {productData.name}
-            {productData.bestSeller === "true" ? (
+            {productData.bestSeller === true ? (
               <img className="h-6 w-6" src={assets.best_seller} alt="" />
             ) : null}
           </h1>

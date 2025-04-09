@@ -21,7 +21,7 @@ const ProductItem = ({ id, image, name, price, sellingPrice, bestSeller }) => {
       <p className="flex flex-row gap-1 items-center pt-3 pb-1 text-sm">
         {" "}
         {name}
-        {bestSeller === "true" ? (
+        {bestSeller === true ? (
           <img className="h-3 w-3" src={assets.best_seller} alt="" />
         ) : null}
       </p>
