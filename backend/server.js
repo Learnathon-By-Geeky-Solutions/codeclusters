@@ -7,6 +7,7 @@ import productRouter from "./routes/productRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import cartRouter from "./routes/cartRoute.js";
+import { createDefaultAdmin } from "./controllers/userController.js";
 
 // App Config
 
@@ -17,6 +18,8 @@ connectDB();
 //middlewares
 app.use(express.json());
 app.use(cors());
+
+createDefaultAdmin();
 
 //API endpoints
 app.use("/api/user", userRouter);

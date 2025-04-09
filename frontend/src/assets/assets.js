@@ -73,6 +73,10 @@ import razorpay_logo from "./razorpay_logo.png";
 import stripe_logo from "./stripe_logo.png";
 import ssl_logo from "./ssl_logo.png";
 import cross_icon from "./cross_icon.png";
+import best_seller from "./best-seller.png";
+import men from "./men.jpeg";
+import women from "./women.jpg";
+import kid from "./kid.jpg";
 
 export const assets = {
   logo,
@@ -93,7 +97,11 @@ export const assets = {
   razorpay_logo,
   stripe_logo,
   cross_icon,
+  best_seller,
   ssl_logo,
+  men,
+  women,
+  kid,
 };
 
 export const products = [

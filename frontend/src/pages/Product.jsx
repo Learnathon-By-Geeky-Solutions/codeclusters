@@ -4,12 +4,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
+import { UserContext } from "../context/UserContext";
 import RelatedProducts from "../components/RelatedProducts";
+import axios from "axios";
+import { toast } from "react-toastify"; // Optional: for user feedback
 
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart, backendUrl, token, navigate } =
     useContext(ShopContext);
+  const { user } = useContext(UserContext);
+
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -18,13 +23,13 @@ const Product = () => {
   const [newReview, setNewReview] = useState({
     rating: 0,
     comment: "",
-    username: "",
+    email: user?.email || "", // Pre-fill with user's email if available
   });
-
-  console.log("object ", token);
+  const offPrice = productData
+    ? ((productData.price - productData.sellingPrice) * 100) / productData.price
+    : 0;
   const fetchProductData = async () => {
     const product = products.find((item) => item._id === productId);
-
     if (product) {
       setProductData(product);
       setImage(product.image[0]);
@@ -32,44 +37,65 @@ const Product = () => {
   };
 
   const fetchReviews = async () => {
-    // Simulated API call - replace with actual API endpoint
     try {
-      const mockReviews = [
-        {
-          id: 1,
-          username: "John Doe",
-          rating: 4,
-          comment: "Great product, really satisfied with the quality!",
-          date: "2025-03-15",
-        },
-        {
-          id: 2,
-          username: "Jane Smith",
-          rating: 5,
-          comment: "Excellent value for money!",
-          date: "2025-03-18",
-        },
-      ];
-      setReviews(mockReviews);
+      const res = await axios.get(
+        `${backendUrl}/api/review/allReview?productId=${productId}`
+      );
+      setReviews(res.data.reviews || []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     }
   };
+
   const handleClick = () => {
     addToCart(productData._id, size);
-    if (!token) {
-      navigate("/login");
-    }
+    toast.success("Product Added!");
   };
-  const handleReviewSubmit = (e) => {
+
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    const review = {
-      id: reviews.length + 1,
-      ...newReview,
-      date: new Date().toISOString().split("T")[0],
+
+    // Prepare review data for the API
+    if (newReview.comment.length < 10) {
+      return toast.error("Comment must be greater than 10 Character");
+    }
+    if (newReview.rating < 1) {
+      return toast.error("You must have provide a rating");
+    }
+
+    const reviewData = {
+      productId,
+      rating: newReview.rating,
+      comment: newReview.comment,
+      email: user?.email || newReview.email, // Use user's email if available
     };
-    setReviews([...reviews, review]);
-    setNewReview({ rating: 0, comment: "", username: "" });
+    console.log(reviewData);
+    try {
+      const res = await axios.post(
+        `${backendUrl}/api/review/addReview`,
+        reviewData,
+        {
+          headers: { token }, // Include token if your API requires authentication
+        }
+      );
+
+      if (res.data.success) {
+        // Add the new review to the state (assuming the API returns the created review)
+        const createdReview = {
+          ...reviewData,
+          _id: res.data.savedReview._id, // Use the ID from the backend response
+          date: new Date().toLocaleString(), // Add date locally if not returned
+        };
+        setReviews([...reviews, createdReview]);
+        setNewReview({ rating: 0, comment: "", email: user?.email || "" });
+        toast.success("Review submitted successfully!"); // Optional feedback
+      } else {
+        toast.error(res.data.message || "Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast.error("Error submitting review");
+    }
   };
 
   useEffect(() => {
@@ -91,7 +117,7 @@ const Product = () => {
       </div>
     );
   };
-  // Calculate average rating from reviews
+
   const getAverageRating = () => {
     if (reviews.length === 0) return 0;
     const total = reviews.reduce((sum, review) => sum + review.rating, 0);
@@ -109,7 +135,7 @@ const Product = () => {
               <button
                 onClick={() => setImage(item)}
                 type="button"
-                key={item._id}
+                key={item}
                 className="p-0 bg-transparent border-0"
               >
                 <img
@@ -131,15 +157,43 @@ const Product = () => {
 
         {/* Product Info */}
         <div className="flex-1">
-          <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
+          <h1 className="flex flex-row gap-1 items-center font-medium text-2xl mt-2">
+            {productData.name}
+            {productData.bestSeller === "true" ? (
+              <img className="h-6 w-6" src={assets.best_seller} alt="" />
+            ) : null}
+          </h1>
           <div className="flex items-center gap-1 mt-2">
             {renderStars(getAverageRating())}
             <p className="pl-2">({reviews.length})</p>
           </div>
-          <p className="mt-5 text-3xl font-medium">
+
+          <div className="mt-5 text-3xl font-medium">
             {currency}
-            {productData.price}
-          </p>
+            {productData.sellingPrice &&
+            productData.sellingPrice !== productData.price
+              ? productData.sellingPrice
+              : productData.price}
+            <p
+              className={`text-xl flex flex-col font-medium text-red-500 ${
+                productData.sellingPrice &&
+                productData.sellingPrice !== productData.price
+                  ? ""
+                  : "hidden"
+              }`}
+            >
+              <del>
+                {" "}
+                {currency}
+                {productData.price}
+              </del>
+              <span className=" mt-5 text-sm text-green-700">
+                {Math.ceil(offPrice)}% Off!! Save {currency}
+                {productData.price - productData.sellingPrice}
+                {" !"}
+              </span>
+            </p>
+          </div>
           <p className="mt-5 text-gray-500 md:w-4/5">
             {productData.description}
           </p>
@@ -152,7 +206,7 @@ const Product = () => {
                   className={`border py-2 px-4 bg-gray-100 ${
                     item === size ? "border-orange-500" : ""
                   }`}
-                  key={item._id}
+                  key={item}
                 >
                   {item}
                 </button>
@@ -218,13 +272,17 @@ const Product = () => {
               {/* Reviews List */}
               <div className="flex flex-col gap-4">
                 {reviews.map((review) => (
-                  <div key={review.id} className="border-b pb-4">
+                  <div key={review._id} className="border-b pb-4">
                     <div className="flex justify-between">
                       <div className="flex items-center gap-2">
-                        <p className="font-medium">{review.username}</p>
+                        <p className="font-medium">{review.email}</p>
                         {renderStars(review.rating)}
                       </div>
-                      <p className="text-sm text-gray-400">{review.date}</p>
+                      <p className="text-sm text-gray-400">
+                        {review.date
+                          ? review.date
+                          : new Date(review.createdAt).toLocaleString()}
+                      </p>
                     </div>
                     <p className="text-gray-500 mt-2">{review.comment}</p>
                   </div>
@@ -240,13 +298,14 @@ const Product = () => {
                 >
                   <input
                     type="text"
-                    placeholder="Your Name"
-                    value={newReview.username}
+                    placeholder="Your Email"
+                    value={user?.email || newReview.email}
                     onChange={(e) =>
-                      setNewReview({ ...newReview, username: e.target.value })
+                      setNewReview({ ...newReview, email: e.target.value })
                     }
                     className="border p-2 rounded"
                     required
+                    disabled={!!user?.email} // Disable if user email is available
                   />
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -281,6 +340,7 @@ const Product = () => {
                   />
                   <button
                     type="submit"
+                    onClick={() => (token ? null : navigate("/login"))}
                     className="bg-black text-white px-6 py-2 w-fit rounded hover:bg-gray-800"
                   >
                     Submit Review

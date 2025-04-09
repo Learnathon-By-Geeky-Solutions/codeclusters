@@ -5,24 +5,17 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const adminAuth = asyncHandler(async (req, res, next) => {
+  const { token } = req.headers;
+  if (!token) {
+    return res.json({
+      success: "false",
+      msg: "Not Authorized! Login again!",
+    });
+  }
   try {
-    const { token } = req.headers;
-    if (!token) {
-      return res.json({
-        success: "false",
-        msg: "Not Authorized! Login again!",
-      });
-    }
     const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (
-      tokenDecoded.id !==
-      process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD
-    ) {
-      return res.json({
-        success: "false",
-        msg: "Not Authorized! Login again!",
-      });
-    }
+    req.adminId = tokenDecoded.id;
+
     next();
   } catch (error) {
     console.log("Error in adminAuth middleware", error.message);

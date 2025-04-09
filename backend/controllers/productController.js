@@ -1,13 +1,21 @@
 import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
+import mongoose from "mongoose";
 
 // function for add product
 const addProduct = asyncHandler(async (req, res) => {
+  const adminId = req.adminId;
+
+  if (!mongoose.isValidObjectId(adminId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+
   try {
     const {
       name,
       description,
       price,
+      sellingPrice,
       category,
       subCategory,
       sizes,
@@ -31,6 +39,7 @@ const addProduct = asyncHandler(async (req, res) => {
       name,
       description,
       price: Number(price),
+      sellingPrice: Number(sellingPrice),
       image: imagesUrl,
       category,
       subCategory,
@@ -45,6 +54,60 @@ const addProduct = asyncHandler(async (req, res) => {
     res.status(200).json({ success: "true", message: "Product added" });
   } catch (error) {
     console.log("Error in addProduct controller", error.message);
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+});
+
+//function for update product
+const updateProduct = asyncHandler(async (req, res) => {
+  const adminId = req.adminId;
+
+  if (!mongoose.isValidObjectId(adminId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+
+  try {
+    const {
+      productId,
+      name,
+      description,
+      price,
+      sellingPrice,
+      category,
+      subCategory,
+      sizes,
+      bestSeller,
+    } = req.body;
+
+    const productData = {
+      name,
+      description,
+      price: Number(price),
+      sellingPrice: Number(sellingPrice),
+      category,
+      subCategory,
+      size: JSON.parse(sizes),
+      bestSeller: bestSeller === "true" ? true : false,
+      date: Date.now(),
+    };
+
+    const updateProduct = await productModel.findByIdAndUpdate(
+      productId,
+      productData,
+      {
+        new: true,
+      }
+    );
+    if (updateProduct) {
+      res.status(200).json({ success: "true", message: "Product updated" });
+    } else
+      res
+        .status(200)
+        .json({ success: "false", message: "Product not updated" });
+  } catch (error) {
+    console.log("Error in updateProduct controller", error.message);
     res.status(500).json({
       error: "Internal server error",
     });
@@ -69,8 +132,8 @@ const listProduct = asyncHandler(async (req, res) => {
     }
 
     let sortOption = {};
-    if (sort === "lowHigh") sortOption.price = 1;
-    if (sort === "highLow") sortOption.price = -1;
+    if (sort === "lowHigh") sortOption.sellingPrice = 1;
+    if (sort === "highLow") sortOption.sellingPrice = -1;
 
     const products = await productModel
       .find(filter)
@@ -94,6 +157,12 @@ const listProduct = asyncHandler(async (req, res) => {
 
 // function for remove product
 const removeProduct = asyncHandler(async (req, res) => {
+  const adminId = req.adminId;
+
+  if (!mongoose.isValidObjectId(adminId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+
   try {
     await productModel.findByIdAndDelete(req.body.id);
     res.status(200).json({
@@ -188,4 +257,5 @@ export {
   removeProduct,
   singleProduct,
   searchProducts,
+  updateProduct,
 };

@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 // add products to cart
 const addToCart = async (req, res) => {
   try {
-    const { userId, itemId, size } = req.body;
+    const userId = req.userId;
+    const { itemId, size } = req.body;
     if (!mongoose.isValidObjectId(userId)) {
       return res
         .status(400)
@@ -32,10 +33,11 @@ const addToCart = async (req, res) => {
   }
 };
 
-//update products to cart
 const updateToCart = async (req, res) => {
   try {
-    const { userId, itemId, size, quantity } = req.body;
+    const userId = req.userId;
+    const { itemId, size, quantity } = req.body;
+
     if (!mongoose.isValidObjectId(userId)) {
       return res
         .status(400)
@@ -43,8 +45,22 @@ const updateToCart = async (req, res) => {
     }
 
     const userData = await user.findById(userId);
-    let cartData = await userData.cartData;
+    let cartData = userData.cartData || {};
+
+    // Check if the item already exists in the cart
+    if (!cartData[itemId]) {
+      cartData[itemId] = {};
+    }
+
+    // Check if the size exists for the item in the cart
+    if (!cartData[itemId][size]) {
+      cartData[itemId][size] = 0;
+    }
+
+    // Update the quantity
     cartData[itemId][size] = quantity;
+
+    // Save the updated cart data
     await user.findByIdAndUpdate(userId, { cartData });
 
     res.json({ success: true, message: "Cart updated" });
@@ -53,11 +69,10 @@ const updateToCart = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-
 // get cart data
 const getUserCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId;
     if (!mongoose.isValidObjectId(userId)) {
       return res
         .status(400)

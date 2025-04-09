@@ -28,6 +28,8 @@ const BestSeller = () => {
             name={item.name}
             image={item.image}
             price={item.price}
+            sellingPrice={item.sellingPrice}
+            bestSeller={item.bestSeller}
           />
         ))}
       </div>

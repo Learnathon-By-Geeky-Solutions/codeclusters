@@ -4,7 +4,7 @@ import reviewModel from "../models/reviewModel.js";
 // Get all reviews for a product
 const getReviews = asyncHandler(async (req, res) => {
   try {
-    const { productId } = req.body;
+    const { productId } = req.query;
     const reviews = await reviewModel.find({ productId: productId });
     res.status(200).json({
       success: "true",
@@ -36,28 +36,9 @@ const addReviews = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log("Error in add review controller", error.message);
     res.status(500).json({
-      error: "Internal server error",
+      message: error.message,
     });
   }
 });
 
-// Optional: Delete a review (if needed)
-const deleteReviews = asyncHandler(async (req, res) => {
-  try {
-    const { productId, id } = req.body;
-    const reviews = await Review.findByIdAndDelete(id);
-    if (!review) {
-      return res.status(404).json({ message: "Review not found" });
-    }
-    res.status(200).json({
-      success: "true",
-      reviews,
-    });
-  } catch (error) {
-    console.log("Error in delete review controller", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-    });
-  }
-});
-export { getReviews, addReviews, deleteReviews };
+export { getReviews, addReviews };
