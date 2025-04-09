@@ -104,11 +104,6 @@ const resetPass = async (email, newPassword) => {
   }
 };
 
-// Clear OTP manually (if needed)
-const clearOTP = async (email) => {
-  await OTP.deleteOne({ email });
-};
-
 //route for forgotPassword
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;

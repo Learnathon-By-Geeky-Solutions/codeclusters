@@ -15,7 +15,7 @@ const userAuth = asyncHandler(async (req, res, next) => {
 
   try {
     const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.body.userId = tokenDecoded.id;
+    req.userId = tokenDecoded.id;
     next();
   } catch (error) {
     console.log("Error in userAuth middleware", error.message);

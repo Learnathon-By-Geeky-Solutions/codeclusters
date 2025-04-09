@@ -8,18 +8,21 @@ import parcel_icon from "../assets/parcel.png";
 
 const Order = ({ token }) => {
   const [orders, setOrders] = useState([]);
-
-  const fetchAllOrders = async () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const fetchAllOrders = async (page = 1) => {
     if (!token) return null;
 
     try {
       const res = await axios.post(
-        backendUrl + "/api/order/list",
+        backendUrl + `/api/order/list?page=${page}&limit=20`,
         {},
         { headers: { token } }
       );
       if (res.data.success) {
         setOrders(res.data.orders.reverse());
+        setTotalPages(res.data.totalPages);
+        setCurrentPage(res.data.currentPage);
       } else toast.error(res.data.message);
     } catch (error) {
       toast.error(error.message);
@@ -44,8 +47,8 @@ const Order = ({ token }) => {
   };
 
   useEffect(() => {
-    fetchAllOrders();
-  }, [token]);
+    fetchAllOrders(currentPage);
+  }, [currentPage, token]);
   Order.propTypes = {
     token: PropTypes.string.isRequired,
   };
@@ -122,6 +125,25 @@ const Order = ({ token }) => {
             </select>
           </div>
         ))}
+        <div className="flex justify-center mt-5">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 mx-2">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

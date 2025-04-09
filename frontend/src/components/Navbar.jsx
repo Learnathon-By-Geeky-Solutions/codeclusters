@@ -4,6 +4,8 @@ import React, { useContext, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
+import { UserContext } from "../context/UserContext";
+import Profile from "./Profile";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -15,10 +17,14 @@ const Navbar = () => {
     setToken,
     setCartItems,
   } = useContext(ShopContext);
+  const { user, setUser } = useContext(UserContext);
+  const [showProfile, setShowProfile] = useState(false);
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setToken("");
     setCartItems({});
+    setUser(null);
     navigate("/login");
   };
 
@@ -60,9 +66,17 @@ const Navbar = () => {
             className="p-0 border-none bg-transparent"
           >
             <img
-              src={assets.profile_icon}
+              src={
+                user?.name
+                  ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user.name
+                    )}`
+                  : assets.profile_icon
+              }
               alt=""
-              className="w-5 cursor-pointer"
+              className={`w-5 cursor-pointer ${
+                user?.name ? "rounded-full" : " "
+              }`}
             />
           </button>
           {/* </Link> */}
@@ -72,6 +86,7 @@ const Navbar = () => {
               <div className="flex flex-col w-36 py-2 text-center bg-slate-100 text-gray-700">
                 <button
                   type="button"
+                  onClick={() => setShowProfile(true)}
                   className="cursor-pointer hover:bg-gray-300 py-1 bg-transparent border-none w-full"
                 >
                   Profile
@@ -116,6 +131,14 @@ const Navbar = () => {
           />
         </button>
       </div>
+
+      {/* Profile Modal Component */}
+      <Profile
+        isOpen={showProfile}
+        onClose={() => setShowProfile(false)}
+        name={user?.name}
+        email={user?.email}
+      />
       {/*Sidebar menu*/}
       <div
         className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${

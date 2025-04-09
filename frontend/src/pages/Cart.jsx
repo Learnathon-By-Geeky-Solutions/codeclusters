@@ -4,6 +4,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { assets } from "../assets/assets";
 import CartTotal from "../components/CartTotal";
+import { toast } from "react-toastify";
 const Cart = () => {
   const {
     currency,
@@ -16,7 +17,13 @@ const Cart = () => {
   } = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
+  const handleCheckout = () => {
+    if (!token) {
+      return toast.warning("You have to  login first");
+    }
 
+    navigate("/placeOrder");
+  };
   useEffect(() => {
     if (products.length > 0) {
       const tempData = [];
@@ -34,11 +41,7 @@ const Cart = () => {
       setCartData(tempData);
     }
   }, [cartItems, products]);
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [token]);
+
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
@@ -46,7 +49,7 @@ const Cart = () => {
       </div>
 
       <div>
-        {cartData.map((item) => {
+        {cartData?.map((item) => {
           const productData = products.find(
             (product) => product._id === item._id
           );
@@ -65,11 +68,11 @@ const Cart = () => {
                   alt=""
                 />
                 <div className="text-xs sm:text-g font-medium">
-                  {productData.name}
+                  {productData?.name}
                   <div className="flex items-center gap-5 mt-2">
                     <p>
                       {currency}
-                      {productData.price}
+                      {productData?.sellingPrice || productData?.price || 0}
                     </p>
                     <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50">
                       {item.size}
@@ -114,7 +117,7 @@ const Cart = () => {
           <div className="w-full text-end">
             <button
               disabled={cartData.length === 0}
-              onClick={() => navigate("/place-order")}
+              onClick={handleCheckout}
               className={`text-white text-sm my-8 px-8 py-3 
     ${
       cartData.length === 0

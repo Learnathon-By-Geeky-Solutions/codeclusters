@@ -6,11 +6,14 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "./App.jsx";
 import ShopContextProvider from "./context/ShopContext.jsx";
+import UserContextProvider from "./context/UserContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <ShopContextProvider>
-      <App />
-    </ShopContextProvider>
+    <UserContextProvider>
+      <ShopContextProvider>
+        <App />
+      </ShopContextProvider>
+    </UserContextProvider>
   </BrowserRouter>
 );

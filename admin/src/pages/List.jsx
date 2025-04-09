@@ -3,15 +3,19 @@ import React, { useEffect, useState } from "react";
 import { backendUrl, currency } from "../App";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
+import editIcon from "../assets/edit.png";
+import deleteIcon from "../assets/bin_icon.png";
+import EditProduct from "../components/EditProduct";
 
 const List = ({ token }) => {
   const [list, setList] = useState([]);
+  const [showUpdate, setShowUpdate] = useState(false);
+  const [product, setProduct] = useState(false);
 
   const fetchList = async () => {
     try {
       const res = await axios.get(backendUrl + "/api/product/list");
       if (res.data.success) {
-        console.log(res.data.products);
         setList(res.data.products);
       } else toast.error(res.data.message);
     } catch (error) {
@@ -37,6 +41,11 @@ const List = ({ token }) => {
     }
   };
 
+  const handleClick = (item) => {
+    setShowUpdate(true);
+    setProduct(item);
+  };
+
   useEffect(() => {
     fetchList();
   }, []);
@@ -46,6 +55,7 @@ const List = ({ token }) => {
   return (
     <>
       <p className="mb-2">All Products List</p>
+
       <div className=" flex flex-col gap-2">
         <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2  border-b-2 border-b-teal-700 bg-gray-100 text-sm">
           <b>Image</b>
@@ -71,15 +81,29 @@ const List = ({ token }) => {
               {currency}
               {item.price}
             </p>
-            <button
-              onClick={() => removeProduct(item._id)}
-              className="text-center text-white w-[25%] bg-red-500 md:text-center md:w-full cursor-pointer hover:bg-red-700 md:text-white px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
-            >
-              X
-            </button>
+            <div className="flex flex-row justify-evenly gap-2">
+              <button
+                onClick={() => removeProduct(item._id)}
+                className="text-center text-white w-[15%] bg-red-500 md:text-center md:w-full cursor-pointer hover:bg-red-700  rounded-full text-xl "
+              >
+                <img className="w-6 h-6 m-auto p-1" src={deleteIcon} alt="" />
+              </button>
+              <button
+                onClick={() => handleClick(item)}
+                className="text-center w-[15%] bg-green-500 md:text-center md:w-full cursor-pointer hover:bg-red-700  rounded-full text-xl "
+              >
+                <img className="w-6 h-6 m-auto p-1" src={editIcon} alt="" />
+              </button>
+            </div>
           </div>
         ))}
       </div>
+      <EditProduct
+        isOpen={showUpdate}
+        onClose={() => setShowUpdate(false)}
+        product={product}
+        token={token}
+      />
     </>
   );
 };

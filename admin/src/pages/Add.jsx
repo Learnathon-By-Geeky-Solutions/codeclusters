@@ -15,12 +15,12 @@ const Add = ({ token }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [sellingPrice, setSellingPrice] = useState("");
   const [category, setCategory] = useState("Men");
-  const [subCategory, setSubCategory] = useState("Dress");
+  const [subCategory, setSubCategory] = useState("Topwear");
   const [sizes, setSizes] = useState([]);
   const [bestSeller, setBestSeller] = useState(false);
 
-  console.log(bestSeller);
   const submitHandler = async (e) => {
     e.preventDefault();
     if (image1 === false) {
@@ -31,6 +31,7 @@ const Add = ({ token }) => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
+      formData.append("sellingPrice", sellingPrice);
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("sizes", JSON.stringify(sizes));
@@ -50,6 +51,7 @@ const Add = ({ token }) => {
         setName("");
         setDescription("");
         setPrice("");
+        setSellingPrice("");
         setImage1(false);
         setImage2(false);
         setImage3(false);
@@ -172,9 +174,9 @@ const Add = ({ token }) => {
             className="w-full px-3 py-2"
             onChange={(e) => setSubCategory(e.target.value)}
           >
-            <option value="Dress">Dress</option>
-            <option value="Cosmetics">Cosmetics</option>
-            <option value="Shoes">Shoes</option>
+            <option value="Topwear">Topwear</option>
+            <option value="Bottomwear">Bottomwear</option>
+            <option value="Winterwear">Winterwear</option>
           </select>
         </div>
 
@@ -186,6 +188,16 @@ const Add = ({ token }) => {
             placeholder="0.00"
             onChange={(e) => setPrice(e.target.value)}
             value={price}
+          />
+        </div>
+        <div>
+          <p className="mb-2">Selling price</p>
+          <input
+            type="number"
+            className=" w-full px-3 py-2 sm:w-[120px]"
+            placeholder="0.00"
+            onChange={(e) => setSellingPrice(e.target.value)}
+            value={sellingPrice}
           />
         </div>
       </div>

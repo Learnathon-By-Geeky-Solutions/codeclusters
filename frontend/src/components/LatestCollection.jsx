@@ -6,20 +6,12 @@ import ProductItem from "./ProductItem";
 
 const LatestCollection = () => {
   const { products } = useContext(ShopContext);
-  //   console.log(products);
-  //   console.log(
-  //     "Products:",
-  //     products,
-  //     "Type:",
-  //     typeof products,
-  //     "Is Array:",
-  //     Array.isArray(products)
-  //   );
+
   const [latestProducts, setLatestProducts] = useState([]);
   useEffect(() => {
     setLatestProducts(products.slice(0, 10));
   }, [products]);
-  //   console.log(latestProducts);
+
   return (
     <div className="my-10">
       <div className="text-center py-8 text-3xl">
@@ -40,6 +32,8 @@ const LatestCollection = () => {
             image={item.image}
             name={item.name}
             price={item.price}
+            sellingPrice={item.sellingPrice}
+            bestSeller={item.bestSeller}
           />
         ))}
       </div>

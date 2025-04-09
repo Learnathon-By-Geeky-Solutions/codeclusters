@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
@@ -9,8 +10,8 @@ const Login = () => {
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+  const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState(location.state?.email || "");
-  console.log(email);
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,10 +22,13 @@ const Login = () => {
         email,
         password,
       });
-      console.log(res);
+
       if (res.data.success) {
-        setToken(res.data.token);
+        setUser(res.data);
+
         localStorage.setItem("token", res.data.token);
+
+        setToken(res.data.token);
       } else {
         toast.error(res.data.message);
       }
@@ -51,8 +55,9 @@ const Login = () => {
           email,
           password,
         });
-        console.log(res);
+
         if (res.data.success) {
+          toast.success("Registered Successfully");
           setToken(res.data.token);
           localStorage.setItem("token", res.data.token);
         } else toast.error(res.data.message);

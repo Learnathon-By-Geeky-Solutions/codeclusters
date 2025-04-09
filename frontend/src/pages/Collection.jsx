@@ -10,9 +10,9 @@ const Collection = () => {
     currentPage,
     setCurrentPage,
     totalPages,
-
+    category,
     setCategory,
-
+    subCategory,
     setSubCategory,
 
     setSortType,
@@ -49,6 +49,18 @@ const Collection = () => {
       <div className="min-w-60">
         <button
           type="button"
+          onClick={() => {
+            setCategory([]);
+            setSubCategory([]);
+          }}
+          className={`text-base rounded-full px-4 py-2 bg-gray-200 ${
+            category.length > 0 || subCategory.length > 0 ? " " : "hidden"
+          }`}
+        >
+          All Products
+        </button>
+        <button
+          type="button"
           onClick={() => setShowFilter(!showFilter)}
           className="my-2 text-xl flex items-center cursor-pointer gap-2"
         >
@@ -75,6 +87,7 @@ const Collection = () => {
                   className="w-3"
                   value={item}
                   onChange={toggleCategory}
+                  checked={category.includes(item)}
                 />
                 {item}
               </label>
@@ -97,6 +110,7 @@ const Collection = () => {
                   className="w-3"
                   value={item}
                   onChange={toggleSubCategory}
+                  checked={subCategory.includes(item)}
                 />
                 {item}
               </label>
@@ -108,7 +122,14 @@ const Collection = () => {
       {/* Product Section */}
       <div className="flex-1">
         <div className="flex justify-between text-base sm:text-2xl mb-4">
-          <Title text1={"ALL"} text2={"COLLECTIONS"} />
+          <Title
+            text1={`${
+              category.length > 0
+                ? category.join(", ").toUpperCase() + " "
+                : "ALL "
+            }`}
+            text2={"COLLECTIONS"}
+          />
 
           {/* Product Sorting */}
           <select
@@ -120,7 +141,6 @@ const Collection = () => {
             <option value="highLow">Sort by : High to Low</option>
           </select>
         </div>
-
         {/* Display Products */}
         {showSearch && searchResults.length > 0 ? (
           <>
@@ -135,6 +155,8 @@ const Collection = () => {
                   name={item.name}
                   image={item.image}
                   price={item.price}
+                  sellingPrice={item.sellingPrice}
+                  bestSeller={item.bestSeller}
                 />
               ))}
             </div>
@@ -148,6 +170,8 @@ const Collection = () => {
                 name={item.name}
                 image={item.image}
                 price={item.price}
+                sellingPrice={item.sellingPrice}
+                bestSeller={item.bestSeller}
               />
             ))}
           </div>

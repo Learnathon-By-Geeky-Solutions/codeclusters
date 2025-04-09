@@ -7,6 +7,7 @@ import { ShopContext } from "../context/ShopContext";
 
 import axios from "axios";
 import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext";
 
 const PlaceOrder = () => {
   const {
@@ -19,11 +20,12 @@ const PlaceOrder = () => {
     deliver_fee,
     products,
   } = useContext(ShopContext);
+  const { user } = useContext(UserContext);
   const [method, setMethod] = useState("cod");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
+    email: user?.email || "",
     street: "",
     city: "",
     state: "",
@@ -217,6 +219,7 @@ const PlaceOrder = () => {
           <Title text1={"PAYMENT"} text2={"METHOD"} />
           <div className="flex gap-3 flex-col lg:flex-row">
             <button
+              type="button"
               onClick={() => setMethod("stripe")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -233,6 +236,7 @@ const PlaceOrder = () => {
               />
             </button>
             <button
+              type="button"
               onClick={() => setMethod("ssl")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -244,6 +248,7 @@ const PlaceOrder = () => {
               <img className="h-8 mx-4" src={assets.ssl_logo} alt="" />
             </button>
             <button
+              type="button"
               onClick={() => setMethod("cod")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -261,7 +266,6 @@ const PlaceOrder = () => {
           <div className="w-full text-end mt-8">
             <button
               type="submit"
-              // onClick={() => navigate("/orders")}
               className="bg-black hover:bg-gray-700 text-white text-sm px-16 py-3"
             >
               PLACE ORDER

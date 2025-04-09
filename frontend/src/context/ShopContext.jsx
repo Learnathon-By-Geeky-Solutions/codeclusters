@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useState } from "react";
-// import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +11,6 @@ const ShopContextProvider = (props) => {
   const currency = "৳";
   const deliver_fee = 100;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  // const [search, setSearch] = useState("");
 
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
@@ -31,7 +29,7 @@ const ShopContextProvider = (props) => {
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relevant");
-  // const [userName, setUsername] = useState("");
+
   const navigate = useNavigate();
 
   //Search
@@ -45,7 +43,7 @@ const ShopContextProvider = (props) => {
       const res = await axios.get(
         `${backendUrl}/api/product/search?page=${searchPage}&limit=20&search=${encodeURIComponent(
           searchQuery
-        )}`
+        )}&category=${category}&subCategory=${subCategory}&sort=${sortType}`
       );
       console.log(res);
       if (res) {
@@ -77,6 +75,7 @@ const ShopContextProvider = (props) => {
     }
     setCartItems(cartData);
 
+    // If user is logged in, sync with backend immediately
     if (token) {
       try {
         await axios.post(
@@ -107,26 +106,6 @@ const ShopContextProvider = (props) => {
     return totalCount;
   };
 
-  const updateQuantity = async (itemId, size, quantity) => {
-    let cartData = structuredClone(cartItems);
-
-    cartData[itemId][size] = quantity;
-    setCartItems(cartData);
-
-    if (token) {
-      try {
-        await axios.post(
-          backendUrl + "/api/cart/update",
-          { itemId, size, quantity },
-          { headers: { token } }
-        );
-      } catch (error) {
-        console.log(error);
-        toast.error(error.message);
-      }
-    }
-  };
-
   const getCartAmount = () => {
     let totalAmount = 0;
     for (const items in cartItems) {
@@ -134,7 +113,9 @@ const ShopContextProvider = (props) => {
       for (const item in cartItems[items]) {
         try {
           if (cartItems[items][item] > 0) {
-            totalAmount += itemInfo.price * cartItems[items][item];
+            totalAmount +=
+              itemInfo?.sellingPrice * cartItems[items][item] ||
+              itemInfo?.price * cartItems[items][item];
           }
         } catch (error) {
           console.log(error);
@@ -144,21 +125,6 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   };
 
-  // const getProductsData = async () => {
-  //   try {
-  //     const res = await axios.get(backendUrl + "/api/product/list");
-  //     if (res.data.success) {
-  //       setProducts(res.data.products);
-
-  //       // console.log(res.data.products);
-  //     } else {
-  //       toast.error(res.data.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.message);
-  //   }
-  // };
   // get product data using pagination
   const getProductsData = async (
     page = 1,
@@ -198,26 +164,96 @@ const ShopContextProvider = (props) => {
         { headers: { token } }
       );
       if (res.data.success) {
-        setCartItems(res.data.cartData);
+        // setCartItems(res.data.cartData); pld
+        return res.data.cartData; // Return cart data for merging
         // setUsername(res.data.name);
       }
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+      return {};
+    }
+  };
+  const mergeCart = async (localCart, serverCart) => {
+    let mergedCart = structuredClone(serverCart);
+
+    // Merge local cart into server cart
+    for (const itemId in localCart) {
+      if (mergedCart[itemId]) {
+        for (const size in localCart[itemId]) {
+          if (mergedCart[itemId][size]) {
+            mergedCart[itemId][size] += localCart[itemId][size];
+          } else {
+            mergedCart[itemId][size] = localCart[itemId][size];
+          }
+        }
+      } else {
+        mergedCart[itemId] = { ...localCart[itemId] };
+      }
+    }
+
+    // Update state with merged cart
+    setCartItems(mergedCart);
+
+    // Sync merged cart with backend
+    if (token) {
+      try {
+        for (const itemId in mergedCart) {
+          for (const size in mergedCart[itemId]) {
+            const quantity = mergedCart[itemId][size];
+            if (quantity > 0) {
+              await axios.post(
+                backendUrl + "/api/cart/update",
+                { itemId, size, quantity },
+                { headers: { token } }
+              );
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to sync cart with server");
+      }
     }
   };
 
-  // useEffect(() => {
-  //   getProductsData();
-  // }, []);
+  const updateQuantity = async (itemId, size, quantity) => {
+    let cartData = structuredClone(cartItems);
+
+    cartData[itemId][size] = quantity;
+    setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/update",
+          { itemId, size, quantity },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (!token && localStorage.getItem("token")) {
-      setToken(localStorage.getItem("token"));
-      getUserCart(localStorage.getItem("token"));
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken && !token) {
+      setToken(storedToken);
     }
   }, []);
 
+  useEffect(() => {
+    if (token) {
+      const syncCart = async () => {
+        const serverCart = await getUserCart(token);
+        await mergeCart(cartItems, serverCart); // Merge local cart with server cart
+      };
+      syncCart();
+    }
+  }, [token]);
   useEffect(() => {
     const timer = setTimeout(() => {
       debouncedSearch();
@@ -236,6 +272,7 @@ const ShopContextProvider = (props) => {
 
     showSearch,
     setShowSearch,
+    getUserCart,
     addToCart,
     cartItems,
     setCartItems,
