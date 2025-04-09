@@ -22,6 +22,7 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
     }).isRequired,
     token: PropTypes.string.isRequired,
   };
+
   const [productId, setProductId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,7 +32,6 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
   const [subCategory, setSubCategory] = useState("Topwear");
   const [sizes, setSizes] = useState([]);
   const [bestSeller, setBestSeller] = useState(false);
-  console.log(sellingPrice);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -67,7 +67,7 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
       toast.error(error.message);
     }
   };
-  console.log("productId: ", productId);
+
   useEffect(() => {
     if (product) {
       setProductId(product._id);
@@ -258,11 +258,12 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
           </div>
           <div className="flex gap-2 mt-2">
             <input
+              onChange={() => setBestSeller((prev) => !prev)}
               type="checkbox"
               id="bestseller"
-              checked={bestSeller === "true"}
-              onChange={() => setBestSeller((prev) => !prev)}
+              checked={bestSeller}
             />
+
             <label className="cursor-pointer" htmlFor="bestseller">
               Add to bestseller
             </label>
