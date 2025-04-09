@@ -4,7 +4,12 @@ import mongoose from "mongoose";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-
+import {
+  isValidUserId,
+  isValidItems,
+  isValidAddress,
+  isValidAmount,
+} from "../utils/validateOrder.js";
 dotenv.config();
 // Configure email transporter
 const transporter = nodemailer.createTransport({
@@ -12,6 +17,10 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+  },
+  secure: true,
+  tls: {
+    rejectUnauthorized: true,
   },
 });
 
@@ -29,77 +38,20 @@ const placeOrder = async (req, res) => {
     const userId = req.userId;
 
     const { items, amount, address } = req.body;
-    if (!mongoose.isValidObjectId(userId)) {
+    if (!isValidUserId(userId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid userId" });
     }
-    if (!Array.isArray(items) || items.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Items must be a non-empty array" });
+    if (!isValidItems(items)) {
+      return res.status(400).json({ success: false, message: "Invalid items" });
     }
-
-    for (let item of items) {
-      if (!Array.isArray(item.image) || item.image.length === 0) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Image must be a non-empty array" });
-      }
-      if (
-        !item.name ||
-        typeof item.name !== "string" ||
-        !item.description ||
-        item.description !== "string" ||
-        !item.price ||
-        typeof item.price !== "number" ||
-        item.price < 0 ||
-        !item.category ||
-        typeof item.category !== "string" ||
-        !item.subCategory ||
-        typeof item.subCategory !== "string" ||
-        !item.size ||
-        typeof item.size !== "string" ||
-        (item.bestSeller !== "true" && item.bestSeller !== "false") ||
-        !item.quantity ||
-        typeof item.quantity !== "number" ||
-        item.quantity < 1 ||
-        !item.price ||
-        typeof item.price !== "number" ||
-        item.price < 0
-      ) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid item in items array" });
-      }
-    }
-
-    if (typeof amount !== "number" || amount <= 0) {
+    if (!isValidAmount(amount)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid amount" });
     }
-
-    if (
-      !address ||
-      typeof address !== "object" ||
-      !address.firstName ||
-      typeof address.firstName !== "string" ||
-      !address.lastName ||
-      typeof address.lastName !== "string" ||
-      !address.email ||
-      typeof address.email !== "string" ||
-      !address.city ||
-      typeof address.city !== "string" ||
-      !address.state ||
-      typeof address.state !== "string" ||
-      !address.zipcode ||
-      typeof address.zipcode !== "string" ||
-      !address.country ||
-      typeof address.country !== "string" ||
-      !address.phone ||
-      typeof address.phone !== "string"
-    ) {
+    if (!isValidAddress(address)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid or incomplete address" });
@@ -136,78 +88,20 @@ const placeOrderStripe = async (req, res) => {
     const { items, amount, address } = req.body;
     const { origin } = req.headers;
 
-    if (!mongoose.isValidObjectId(userId)) {
+    if (!isValidUserId(userId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid userId" });
     }
-    if (!Array.isArray(items) || items.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Items must be a non-empty array" });
+    if (!isValidItems(items)) {
+      return res.status(400).json({ success: false, message: "Invalid items" });
     }
-
-    for (let item of items) {
-      if (!Array.isArray(item.image) || item.image.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Image must be a non-empty array",
-        });
-      }
-      if (
-        !item.name ||
-        typeof item.name !== "string" ||
-        !item.description ||
-        item.description !== "string" ||
-        !item.price ||
-        typeof item.price !== "number" ||
-        item.price < 0 ||
-        !item.category ||
-        typeof item.category !== "string" ||
-        !item.subCategory ||
-        typeof item.subCategory !== "string" ||
-        !item.size ||
-        typeof item.size !== "string" ||
-        (item.bestSeller !== "true" && item.bestSeller !== "false") ||
-        !item.quantity ||
-        typeof item.quantity !== "number" ||
-        item.quantity < 1 ||
-        !item.price ||
-        typeof item.price !== "number" ||
-        item.price < 0
-      ) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid item in items array" });
-      }
-    }
-
-    if (typeof amount !== "number" || amount <= 0) {
+    if (!isValidAmount(amount)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid amount" });
     }
-
-    if (
-      !address ||
-      typeof address !== "object" ||
-      !address.firstName ||
-      typeof address.firstName !== "string" ||
-      !address.lastName ||
-      typeof address.lastName !== "string" ||
-      !address.email ||
-      typeof address.email !== "string" ||
-      !address.city ||
-      typeof address.city !== "string" ||
-      !address.state ||
-      typeof address.state !== "string" ||
-      !address.zipcode ||
-      typeof address.zipcode !== "string" ||
-      !address.country ||
-      typeof address.country !== "string" ||
-      !address.phone ||
-      typeof address.phone !== "string"
-    ) {
+    if (!isValidAddress(address)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid or incomplete address" });
