@@ -44,7 +44,7 @@ const addProduct = asyncHandler(async (req, res) => {
       category,
       subCategory,
       size: JSON.parse(sizes),
-      bestSeller: bestSeller === "true" ? true : false,
+      bestSeller: bestSeller,
       date: Date.now(),
     };
 
@@ -89,7 +89,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       category,
       subCategory,
       size: JSON.parse(sizes),
-      bestSeller: bestSeller === "true" ? true : false,
+      bestSeller: bestSeller,
       date: Date.now(),
     };
 

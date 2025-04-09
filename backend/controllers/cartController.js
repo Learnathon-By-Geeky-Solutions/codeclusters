@@ -79,7 +79,7 @@ const getUserCart = async (req, res) => {
         .json({ success: false, message: "Invalid userId" });
     }
     const userData = await user.findById(userId);
-    let cartData = await userData.cartData;
+    let cartData = (await userData.cartData) || {};
     let name = userData.name;
     res.json({ success: true, cartData, name });
   } catch (error) {

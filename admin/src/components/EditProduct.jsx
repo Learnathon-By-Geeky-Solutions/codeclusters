@@ -81,6 +81,7 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
       setBestSeller(product.bestSeller);
     }
   }, [product]);
+  console.log(bestSeller);
 
   if (!isOpen) return null;
 
