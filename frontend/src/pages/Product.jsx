@@ -7,7 +7,7 @@ import { ShopContext } from "../context/ShopContext";
 import { UserContext } from "../context/UserContext";
 import RelatedProducts from "../components/RelatedProducts";
 import axios from "axios";
-import { toast } from "react-toastify"; // Optional: for user feedback
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { productId } = useParams();
@@ -23,7 +23,7 @@ const Product = () => {
   const [newReview, setNewReview] = useState({
     rating: 0,
     comment: "",
-    email: user?.email || "", // Pre-fill with user's email if available
+    email: user?.email || "",
   });
   const offPrice = productData
     ? ((productData.price - productData.sellingPrice) * 100) / productData.price

@@ -2,8 +2,15 @@ import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { backendUrl } from "../App";
+import PropTypes from "prop-types";
 
 const ChangePassword = ({ isOpen, onClose, token }) => {
+  ChangePassword.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    token: PropTypes.string.isRequired,
+  };
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");

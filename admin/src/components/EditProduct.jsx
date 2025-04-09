@@ -2,8 +2,26 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { backendUrl } from "../App";
+import PropTypes from "prop-types";
 
 const EditProduct = ({ isOpen, onClose, product, token }) => {
+  EditProduct.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    product: PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+      description: PropTypes.string,
+      image: PropTypes.array,
+      category: PropTypes.string,
+      subCategory: PropTypes.string,
+      size: PropTypes.array,
+      bestSeller: PropTypes.string,
+      sellingPrice: PropTypes.number,
+      price: PropTypes.number,
+    }).isRequired,
+    token: PropTypes.string.isRequired,
+  };
   const [productId, setProductId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");

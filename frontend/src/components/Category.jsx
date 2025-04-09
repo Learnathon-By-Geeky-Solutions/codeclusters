@@ -40,9 +40,9 @@ const Category = () => {
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <div
-            key={index}
+            key={category.name}
             className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
           >
             <img

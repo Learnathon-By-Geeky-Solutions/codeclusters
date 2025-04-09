@@ -41,11 +41,7 @@ const Cart = () => {
       setCartData(tempData);
     }
   }, [cartItems, products]);
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate("/login");
-  //   }
-  // }, [token]);
+
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
