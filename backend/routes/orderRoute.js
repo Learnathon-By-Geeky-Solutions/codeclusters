@@ -28,7 +28,7 @@ orderRouter.post("/place", userAuth, placeOrder);
 orderRouter.post("/stripe", userAuth, placeOrderStripe);
 
 //user feature
-orderRouter.post("/userorders", userAuth, userOrders);
+orderRouter.post("/userorders", userAuth, limiter, userOrders);
 
 //verifyPayment
 orderRouter.post("/verifyStripe", userAuth, limiter, verifyStripe);
