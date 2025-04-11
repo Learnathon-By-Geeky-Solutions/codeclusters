@@ -7,16 +7,10 @@ export const isValidItems = (items) => {
 
   for (let item of items) {
     if (
-      !Array.isArray(item.image) ||
-      item.image.length === 0 ||
       typeof item.name !== "string" ||
-      typeof item.description !== "string" ||
       typeof item.price !== "number" ||
       item.price < 0 ||
-      typeof item.category !== "string" ||
-      typeof item.subCategory !== "string" ||
       typeof item.size !== "string" ||
-      (item.bestSeller !== "true" && item.bestSeller !== "false") ||
       typeof item.quantity !== "number" ||
       item.quantity < 1
     ) {

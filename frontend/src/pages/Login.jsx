@@ -57,6 +57,7 @@ const Login = () => {
         });
 
         if (res.data.success) {
+          setUser(res.data);
           toast.success("Registered Successfully");
           setToken(res.data.token);
           localStorage.setItem("token", res.data.token);

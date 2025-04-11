@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
-import { useContext } from "react";
 import Title from "../components/Title";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -35,7 +34,7 @@ const Orders = () => {
             allOrdersItems.push(item);
           });
         });
-        setOrderData(allOrdersItems.reverse());
+        setOrderData(allOrdersItems.toReversed());
       }
     } catch (error) {
       console.log(error);
