@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import ChangePassword from "./ChangePassword";
 
 const Navbar = ({ setToken, token }) => {
