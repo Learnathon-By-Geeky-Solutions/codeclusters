@@ -37,7 +37,7 @@ const VerifyPayment = () => {
     }
   }, [token]);
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-col">
       <h4>Verifying your payment...</h4>
       <HashLoader loading={loading} />
     </div>
