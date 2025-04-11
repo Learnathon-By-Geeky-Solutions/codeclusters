@@ -1,6 +1,6 @@
 [
   {
-    "source": "/:path*",
+    "source": "/(.*)",
     "destination": "/index.html"
   }
 ]
