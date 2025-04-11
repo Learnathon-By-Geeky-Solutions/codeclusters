@@ -4,7 +4,7 @@ import {assets} from "../assets/assets.js";
 
 const About = () => {
   return (
-    <>
+    
         <div className="px-5 py-20 max-w-screen-xl mx-auto font-sans text-gray-800">
       {/* ABOUT US SECTION */}
       <section className="mb-20">
@@ -65,7 +65,7 @@ const About = () => {
         </div>
       </section>
     </div>
-</>
+
   );
 };
 
