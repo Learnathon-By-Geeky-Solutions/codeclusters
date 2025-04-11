@@ -119,6 +119,8 @@ const placeOrderStripe = async (req, res) => {
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
     const line_items = items.map((item) => ({
       price_data: {
         currency: currency,
