@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
+import HashLoader from "react-spinners/HashLoader";
 
 const Collection = () => {
   const {
@@ -22,6 +23,7 @@ const Collection = () => {
     setSearchPage,
     showSearch,
     searchQuery,
+    loading,
   } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -142,6 +144,12 @@ const Collection = () => {
           </select>
         </div>
         {/* Display Products */}
+
+        {loading && (
+          <div className="flex justify-center">
+            <HashLoader size={40} loading={loading} speedMultiplier={1.5} />
+          </div>
+        )}
         {showSearch && searchResults.length > 0 ? (
           <>
             <p className="text-gray-600 text-sm">

@@ -15,6 +15,7 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(true);
 
   //state for search
   const [showSearch, setShowSearch] = useState(false);
@@ -147,6 +148,7 @@ const ShopContextProvider = (props) => {
         setProducts(res.data.products);
         setTotalPages(res.data.totalPages);
         setCurrentPage(res.data.currentPage);
+        setLoading(false);
       } else {
         toast.error(res.data.message);
       }
@@ -298,6 +300,7 @@ const ShopContextProvider = (props) => {
     setSearchPage,
     searchQuery,
     setSearchQuery,
+    loading,
   };
 
   return (
