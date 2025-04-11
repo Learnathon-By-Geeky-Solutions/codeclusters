@@ -14,9 +14,11 @@ const VerifyPayment = () => {
 
   const verifyPayment = async () => {
     try {
-      if (!token) {
-        return null;
-      }
+      console.log("Token available, verifying...", {
+        token,
+        success,
+        orderId,
+      });
       const res = await axios.post(
         backendUrl + "/api/order/verifyStripe",
         { success, orderId },
@@ -33,7 +35,9 @@ const VerifyPayment = () => {
   };
 
   useEffect(() => {
-    verifyPayment();
+    if (token) {
+      verifyPayment();
+    }
   }, [token]);
   return <div></div>;
 };
