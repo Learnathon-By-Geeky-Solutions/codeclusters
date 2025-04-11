@@ -4,7 +4,6 @@ import { ShopContext } from "../context/ShopContext";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import HashLoader from "react-spinners/HashLoader";
 
 //not secured. have to use webHook
 const VerifyPayment = () => {
@@ -37,10 +36,13 @@ const VerifyPayment = () => {
     }
   }, [token]);
   return (
-    <div className="flex justify-center flex-col">
-      <h4>Verifying your payment...</h4>
-      <HashLoader loading={loading} />
-    </div>
+    <>
+      {loading && (
+        <div className="flex justify-center items-center w-full">
+          <h4>Verifying your payment...</h4>
+        </div>
+      )}
+    </>
   );
 };
 
