@@ -4,7 +4,7 @@ import {assets} from "../assets/assets.js";
 
 const About = () => {
   return (
-    <>
+    
         <div className="px-5 py-20 max-w-screen-xl mx-auto font-sans text-gray-800">
       {/* ABOUT US SECTION */}
       <section className="mb-20">
@@ -19,20 +19,14 @@ const About = () => {
           />
           <div className="text-justify flex-1 md:pl-10">
             <p className="mb-4">
-              Forever was born out of a passion for innovation and a desire to revolutionize the way people shop online.
-              Our journey began with a simple idea: to provide a platform where customers can easily discover, explore,
-              and purchase a wide range of products from the comfort of their homes.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui aperiam architecto vero. Asperiores nostrum facilis sapiente suscipit modi voluptatem expedita porro adipisci veritatis neque fuga cumque, nisi quasi, sunt ullam.
             </p>
             <p className="mb-4">
-              Since our inception, we’ve worked tirelessly to curate a diverse selection of high-quality products that
-              cater to every taste and preference. From fashion and beauty to electronics and home essentials, we offer an
-              extensive collection sourced from trusted brands and suppliers.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit officiis est voluptatem! Hic necessitatibus vitae dolore minima ex perferendis veniam quibusdam ab voluptas repellat dicta ut doloremque architecto laudantium eum tempora, dolorem minus distinctio accusantium dignissimos a molestiae? Ea nesciunt debitis eaque. Debitis maiores ullam temporibus reiciendis accusamus doloremque, qui impedit cupiditate tempora quae natus corrupti enim aut a laborum necessitatibus officiis quis corporis est nobis quas assumenda molestias suscipit iusto! Quas quis in sunt voluptate, accusamus aliquid magnam voluptatum?
             </p>
             <h3 className="text-lg font-semibold mt-5">Our Mission</h3>
             <p className="mt-2">
-              Our mission at Forever is to empower customers with choice, convenience, and confidence. We’re dedicated
-              to providing a seamless shopping experience that exceeds expectations — from browsing and ordering to
-              delivery and beyond.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum eum tempore voluptas, quisquam officiis necessitatibus tenetur sed atque, expedita voluptatem, a excepturi nihil. Animi, aperiam, eius magnam ipsa sapiente, iure est harum ipsum voluptate esse libero sunt nesciunt doloremque rem.
             </p>
           </div>
         </div>
@@ -65,7 +59,7 @@ const About = () => {
         </div>
       </section>
     </div>
-</>
+
   );
 };
 
