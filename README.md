@@ -33,6 +33,8 @@ Check out our [Wiki](https://github.com/Learnathon-By-Geeky-Solutions/codecluste
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=vulnerabilities&style=for-the-badge&color=FF6F61)](https://sonarcloud.io/component_measures/domain/Vulnerability?id=Learnathon-By-Geeky-Solutions_codeclusters)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=bugs&style=for-the-badge&color=FF6F61)](https://sonarcloud.io/component_measures/domain/Bugs?id=Learnathon-By-Geeky-Solutions_codeclusters)
 [![Security](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=security_rating&style=for-the-badge&color=28A745)](https://sonarcloud.io/component_measures/domain/Security?id=Learnathon-By-Geeky-Solutions_codeclusters)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_codeclusters)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_codeclusters)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=code_smells&style=for-the-badge&color=FFA500)](https://sonarcloud.io/component_measures/domain/CodeSmells?id=Learnathon-By-Geeky-Solutions_codeclusters)
 
 </div>
