@@ -9,9 +9,7 @@ const VerifyOTP = () => {
   const { otpFor } = useParams();
   const location = useLocation();
   const { navigate, backendUrl } = useContext(ShopContext);
-  console.log(otpFor);
   const email = location.state?.email || "";
-  console.log(email);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -22,7 +20,7 @@ const VerifyOTP = () => {
           otp,
         }
       );
-      console.log(res);
+
       if (res.data.result.valid) {
         toast.success("OTP verified!");
         if (otpFor === "password") {

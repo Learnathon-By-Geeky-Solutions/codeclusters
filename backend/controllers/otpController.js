@@ -131,116 +131,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
       await storeOTP(email, otp, otpFor);
       console.log(`OTP for ${email}: ${otp}`);
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "🔒 Password Reset Request - Your OTP",
-        html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 0;
-                            background-color: #f4f4f4;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background: white;
-                            border-radius: 10px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                        }
-                        .header {
-                            background: #007bff;
-                            color: white;
-                            padding: 20px;
-                            text-align: center;
-                            border-top-left-radius: 10px;
-                            border-top-right-radius: 10px;
-                        }
-                        .content {
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        .otp-box {
-                            background: #f8f9fa;
-                            padding: 20px;
-                            margin: 20px 0;
-                            border-radius: 8px;
-                            display: inline-block;
-                            cursor: pointer;
-                            font-size: 24px;
-                            font-weight: bold;
-                            letter-spacing: 5px;
-                            transition: all 0.3s ease;
-                        }
-                        .otp-box:hover {
-                            background: #e9ecef;
-                            transform: scale(1.05);
-                        }
-                        .footer {
-                            padding: 20px;
-                            text-align: center;
-                            color: #666;
-                            font-size: 12px;
-                            border-bottom-left-radius: 10px;
-                            border-bottom-right-radius: 10px;
-                        }
-                        .warning {
-                            color: #dc3545;
-                            margin-top: 20px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Password Reset</h1>
-                            <p>We've received a request to reset your password</p>
-                        </div>
-                        <div class="content">
-                            <p>Hello ${User.email},</p>
-                            <p>Use the following One-Time Password (OTP) to reset your password:</p>
-                            <div class="otp-box" onclick="copyOTP('${otp}')" title="Click to copy">
-                                ${otp}
-                            </div>
-                            <p>Click the OTP above to copy it to your clipboard.<br>
-                            If that doesn't work, please manually copy the code.</p>
-                            <p class="warning">This OTP expires in 2 minutes</p>
-                        </div>
-                        <div class="footer">
-                            <p>If you didn't request this, please ignore this email.</p>
-                            <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
-                        </div>
-                    </div>
-                    <script>
-                        function copyOTP(otp) {
-                            try {
-                                navigator.clipboard.writeText(otp)
-                                    .then(() => alert('OTP copied to clipboard!'))
-                                    .catch(() => alert('Please manually copy the OTP: ' + otp));
-                            } catch (err) {
-                                alert('Please manually copy the OTP: ' + otp);
-                            }
-                        }
-                    </script>
-                </body>
-                </html>
-            `,
-      };
-
-      await transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Error: ", error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
+      await sendOTPEmail({ email, otp, purpose: otpFor });
       res.json({ success: true, message: "OTP sent successfully" });
     } else {
       return res.json({ success: false, message: "User doesn't Exist" });
@@ -252,6 +143,100 @@ const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 });
+const sendOTPEmail = async ({ email, otp, purpose }) => {
+  const subject =
+    purpose === "password"
+      ? "🔒 Password Reset Request - Your OTP"
+      : "✅ Verify your email - Your OTP";
+
+  const title = purpose === "password" ? "Password Reset" : "Verify Email";
+  const purposeText =
+    purpose === "password"
+      ? "We've received a request to reset your password"
+      : "You're almost there! Verify your email to get started.";
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          }
+          .header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+          .content {
+            padding: 30px;
+            text-align: center;
+          }
+          .otp-box {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+          }
+          .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${title}</h1>
+            <p>${purposeText}</p>
+          </div>
+          <div class="content">
+            <p>Hello ${email},</p>
+            <p>Your OTP is:</p>
+            <div class="otp-box">${otp}</div>
+            <p>This OTP expires in 2 minutes.</p>
+          </div>
+          <div class="footer">
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+  return transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error: ", error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
 
 const verifyEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -267,116 +252,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
       await storeOTP(email, otp, otpFor);
       console.log(`OTP for ${email}: ${otp}`);
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "✅ Verify your email  - Your OTP",
-        html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 0;
-                            background-color: #f4f4f4;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background: white;
-                            border-radius: 10px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                        }
-                        .header {
-                            background: #007bff;
-                            color: white;
-                            padding: 20px;
-                            text-align: center;
-                            border-top-left-radius: 10px;
-                            border-top-right-radius: 10px;
-                        }
-                        .content {
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        .otp-box {
-                            background: #f8f9fa;
-                            padding: 20px;
-                            margin: 20px 0;
-                            border-radius: 8px;
-                            display: inline-block;
-                            cursor: pointer;
-                            font-size: 24px;
-                            font-weight: bold;
-                            letter-spacing: 5px;
-                            transition: all 0.3s ease;
-                        }
-                        .otp-box:hover {
-                            background: #e9ecef;
-                            transform: scale(1.05);
-                        }
-                        .footer {
-                            padding: 20px;
-                            text-align: center;
-                            color: #666;
-                            font-size: 12px;
-                            border-bottom-left-radius: 10px;
-                            border-bottom-right-radius: 10px;
-                        }
-                        .warning {
-                            color: #dc3545;
-                            margin-top: 20px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Verify Email</h1>
-                      
-                        </div>
-                        <div class="content">
-                            <p>Hello ${User.email},</p>
-                            <p>Use the following One-Time Password (OTP) to verify your email:</p>
-                            <div class="otp-box" onclick="copyOTP('${otp}')" title="Click to copy">
-                                ${otp}
-                            </div>
-                            <p>Click the OTP above to copy it to your clipboard.<br>
-                            If that doesn't work, please manually copy the code.</p>
-                            <p class="warning">This OTP expires in 2 minutes</p>
-                        </div>
-                        <div class="footer">
-                            <p>If you didn't request this, please ignore this email.</p>
-                            <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
-                        </div>
-                    </div>
-                    <script>
-                        function copyOTP(otp) {
-                            try {
-                                navigator.clipboard.writeText(otp)
-                                    .then(() => alert('OTP copied to clipboard!'))
-                                    .catch(() => alert('Please manually copy the OTP: ' + otp));
-                            } catch (err) {
-                                alert('Please manually copy the OTP: ' + otp);
-                            }
-                        }
-                    </script>
-                </body>
-                </html>
-            `,
-      };
+      await sendOTPEmail({ email, otp, purpose: otpFor });
 
-      await transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Error: ", error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
       res.json({ success: true, message: "OTP sent successfully" });
     } else {
       return res.json({ success: false, message: "User doesn't Exist" });
