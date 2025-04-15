@@ -262,7 +262,7 @@ const ShopContextProvider = (props) => {
     }, 500); // Delay API call by 500ms
 
     return () => clearTimeout(timer);
-  }, [searchQuery, searchPage]); // Runs whenever `searchQuery` or `searchPage` changes
+  }, [searchQuery, searchPage]);
   // Fetch products when filters change
   useEffect(() => {
     getProductsData(currentPage, category, subCategory, sortType);
