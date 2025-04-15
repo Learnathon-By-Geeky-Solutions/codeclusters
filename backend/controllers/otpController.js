@@ -117,32 +117,6 @@ const resetPass = async (email, newPassword) => {
   }
 };
 
-const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-  const otpFor = "password";
-  if (!validator.isEmail(email)) {
-    return res.json({ success: false, message: "Email is not valid" });
-  }
-
-  const User = await user.findOne({ email });
-  try {
-    if (User) {
-      const otp = generateOTP();
-      await storeOTP(email, otp, otpFor);
-      console.log(`OTP for ${email}: ${otp}`);
-
-      await sendOTPEmail({ email, otp, purpose: otpFor });
-      res.json({ success: true, message: "OTP sent successfully" });
-    } else {
-      return res.json({ success: false, message: "User doesn't Exist" });
-    }
-  } catch (error) {
-    console.log("Error in forgot password controller", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-    });
-  }
-});
 const sendOTPEmail = async ({ email, otp, purpose }) => {
   const subject =
     purpose === "password"
@@ -238,32 +212,32 @@ const sendOTPEmail = async ({ email, otp, purpose }) => {
   });
 };
 
-const verifyEmail = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-  const otpFor = "email";
+const processOTPRequest = async ({ email, otpFor, res }) => {
   if (!validator.isEmail(email)) {
     return res.json({ success: false, message: "Email is not valid" });
   }
 
   const User = await user.findOne({ email });
-  try {
-    if (User) {
-      const otp = generateOTP();
-      await storeOTP(email, otp, otpFor);
-      console.log(`OTP for ${email}: ${otp}`);
-
-      await sendOTPEmail({ email, otp, purpose: otpFor });
-
-      res.json({ success: true, message: "OTP sent successfully" });
-    } else {
-      return res.json({ success: false, message: "User doesn't Exist" });
-    }
-  } catch (error) {
-    console.log("Error in forgot password controller", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-    });
+  if (!User) {
+    return res.json({ success: false, message: "User doesn't Exist" });
   }
+
+  const otp = generateOTP();
+  await storeOTP(email, otp, otpFor);
+  console.log(`OTP for ${email}: ${otp}`);
+  await sendOTPEmail({ email, otp, purpose: otpFor });
+
+  return res.json({ success: true, message: "OTP sent successfully" });
+};
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  await processOTPRequest({ email, otpFor: "password", res });
+});
+
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  await processOTPRequest({ email, otpFor: "email", res });
 });
 
 const verifyOtp = asyncHandler(async (req, res) => {
