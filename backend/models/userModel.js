@@ -15,6 +15,11 @@ const userModel = mongoose.Schema(
       type: String,
       required: true,
     },
+    verified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     cartData: {
       type: Object,
       default: {},

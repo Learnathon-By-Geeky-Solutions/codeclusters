@@ -1,31 +1,38 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
-
+  const { otpFor } = useParams();
   const location = useLocation();
   const { navigate, backendUrl } = useContext(ShopContext);
-
+  console.log(otpFor);
   const email = location.state?.email || "";
   console.log(email);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(backendUrl + "/api/user/verify", {
-        email,
-        otp,
-      });
+      const res = await axios.post(
+        `${backendUrl}/api/user/verify?otpFor=${otpFor}`,
+        {
+          email,
+          otp,
+        }
+      );
       console.log(res);
       if (res.data.result.valid) {
         toast.success("OTP verified!");
-        setTimeout(
-          () => navigate("/resetPassword", { state: { email } }),
-          2000
-        );
+        if (otpFor === "password") {
+          setTimeout(
+            () => navigate("/resetPassword", { state: { email } }),
+            2000
+          );
+        } else {
+          setTimeout(() => navigate("/login", { state: { email } }), 2000);
+        }
       } else {
         toast.error(res.data.result.message);
       }

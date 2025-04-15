@@ -9,6 +9,7 @@ import {
 import {
   forgotPassword,
   resetPassword,
+  verifyEmail,
   verifyOtp,
 } from "../controllers/otpController.js";
 import userAuth from "../middleware/userAuth.js";
@@ -21,6 +22,7 @@ userRouter.post("/admin", adminLogin);
 userRouter.post("/admin/changePassword", adminAuth, changeAdminPassword);
 
 userRouter.post("/forgotPassword", forgotPassword);
+userRouter.post("/verifyEmail", verifyEmail);
 userRouter.post("/verify", verifyOtp);
 userRouter.post("/resetPassword", resetPassword);
 userRouter.post("/userInfo", userAuth, userInfo);

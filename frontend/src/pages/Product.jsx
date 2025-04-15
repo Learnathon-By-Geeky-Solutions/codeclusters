@@ -55,7 +55,6 @@ const Product = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare review data for the API
     if (newReview.comment.length < 10) {
       return toast.error("Comment must be greater than 10 Character");
     }
@@ -67,7 +66,7 @@ const Product = () => {
       productId,
       rating: newReview.rating,
       comment: newReview.comment,
-      email: user?.email || newReview.email, // Use user's email if available
+      email: user?.email || newReview.email,
     };
     console.log(reviewData);
     try {
@@ -75,20 +74,19 @@ const Product = () => {
         `${backendUrl}/api/review/addReview`,
         reviewData,
         {
-          headers: { token }, // Include token if your API requires authentication
+          headers: { token },
         }
       );
 
       if (res.data.success) {
-        // Add the new review to the state (assuming the API returns the created review)
         const createdReview = {
           ...reviewData,
-          _id: res.data.savedReview._id, // Use the ID from the backend response
-          date: new Date().toLocaleString(), // Add date locally if not returned
+          _id: res.data.savedReview._id,
+          date: new Date().toLocaleString(),
         };
         setReviews([...reviews, createdReview]);
         setNewReview({ rating: 0, comment: "", email: user?.email || "" });
-        toast.success("Review submitted successfully!"); // Optional feedback
+        toast.success("Review submitted successfully!");
       } else {
         toast.error(res.data.message || "Failed to submit review");
       }
@@ -126,9 +124,7 @@ const Product = () => {
 
   return productData ? (
     <div className="border-t2 pt-10 transition-opacity ease-in duration-500 opacity-100">
-      {/* Product data */}
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
-        {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.5%] w-full">
             {productData.image.map((item) => (
@@ -155,7 +151,6 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Product Info */}
         <div className="flex-1">
           <h1 className="flex flex-row gap-1 items-center font-medium text-2xl mt-2">
             {productData.name}
@@ -241,7 +236,6 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Description and Review section */}
       <div className="mt-20">
         <div className="flex">
           <button
@@ -269,7 +263,6 @@ const Product = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-6">
-              {/* Reviews List */}
               <div className="flex flex-col gap-4">
                 {reviews.map((review) => (
                   <div key={review._id} className="border-b pb-4">
@@ -289,7 +282,6 @@ const Product = () => {
                 ))}
               </div>
 
-              {/* Add Review Form */}
               <div className="mt-6">
                 <h3 className="font-medium mb-4">Add Your Review</h3>
                 <form
@@ -305,7 +297,7 @@ const Product = () => {
                     }
                     className="border p-2 rounded"
                     required
-                    disabled={!!user?.email} // Disable if user email is available
+                    disabled={!!user?.email}
                   />
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (

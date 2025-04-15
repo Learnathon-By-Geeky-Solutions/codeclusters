@@ -11,7 +11,7 @@ import {
   isValidAmount,
 } from "../utils/validateOrder.js";
 dotenv.config();
-// Configure email transporter
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -24,14 +24,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-//
 const currency = "bdt";
 const deliveryCharge = 100;
 
-// gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-//placing order using cod
 
 const placeOrder = async (req, res) => {
   try {
@@ -78,8 +74,6 @@ const placeOrder = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-
-//placing order using Stripe
 
 const placeOrderStripe = async (req, res) => {
   try {
@@ -183,11 +177,6 @@ const verifyStripe = async (req, res) => {
   }
 };
 
-//placing order using ssl
-
-const placeOrderSsl = async (req, res) => {};
-
-//All order data for admin
 const allOrders = async (req, res) => {
   const adminId = req.adminId;
 
@@ -199,7 +188,7 @@ const allOrders = async (req, res) => {
     const { page = 1, limit = 20 } = req.query;
     const totalOrders = await orderModel.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);
-    // Reverse the page logic: page 1 starts from the end
+
     const effectivePage = totalPages - parseInt(page) + 1;
     const skip = Math.max((effectivePage - 1) * limit, 0);
     const orders = await orderModel.find({}).skip(skip).limit(parseInt(limit));
@@ -217,7 +206,6 @@ const allOrders = async (req, res) => {
   }
 };
 
-//User order data
 const userOrders = async (req, res) => {
   try {
     const userId = req.userId;
@@ -236,7 +224,6 @@ const userOrders = async (req, res) => {
   }
 };
 
-//update order status
 const updateStatus = async (req, res) => {
   const adminId = req.adminId;
 
@@ -386,7 +373,6 @@ const updateStatus = async (req, res) => {
         }
       });
 
-      //------
       res.json({ success: true, message: "Status Updated" });
     }
   } catch (error) {

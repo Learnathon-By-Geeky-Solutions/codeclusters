@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { assets } from "../assets/assets"; // Make sure this path is correct
+import { assets } from "../assets/assets";
 
 const Profile = ({ isOpen, onClose, name, email }) => {
   if (!isOpen) return null;

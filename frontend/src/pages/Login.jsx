@@ -31,6 +31,17 @@ const Login = () => {
         setToken(res.data.token);
       } else {
         toast.error(res.data.message);
+        if (!res.data.emailVerified) {
+          const emailVerify = await axios.post(
+            backendUrl + "/api/user/verifyEmail",
+            { email }
+          );
+          if (emailVerify.data.success) {
+            setTimeout(() => {
+              navigate("/verifyOtp/email", { state: { email } });
+            }, 2000);
+          } else toast.error(emailVerify.data.message);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -57,10 +68,16 @@ const Login = () => {
         });
 
         if (res.data.success) {
-          setUser(res.data);
           toast.success("Registered Successfully");
-          setToken(res.data.token);
-          localStorage.setItem("token", res.data.token);
+          const emailVerify = await axios.post(
+            backendUrl + "/api/user/verifyEmail",
+            { email }
+          );
+          if (emailVerify.data.success) {
+            setTimeout(() => {
+              navigate("/verifyOtp/email", { state: { email } });
+            }, 2000);
+          } else toast.error(emailVerify.data.message);
         } else toast.error(res.data.message);
       } else toast.error("Password doesn't match");
     } catch (error) {

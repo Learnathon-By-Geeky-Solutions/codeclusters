@@ -39,7 +39,7 @@ const App = () => {
         <Route path="/orders" element={<Orders />} />
         <Route path="/verifyPayment" element={<VerifyPayment />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/verifyOtp" element={<VerifyOTP />} />
+        <Route path="/verifyOtp/:otpFor" element={<VerifyOTP />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
       </Routes>
       <Footer />
