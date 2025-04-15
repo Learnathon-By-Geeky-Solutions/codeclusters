@@ -87,9 +87,9 @@ const resetPass = async (email, newPassword) => {
       };
     }
 
-    const verified = await OTP.findOne({ email, otpFor: "password" });
+    const verified_data = await OTP.findOne({ email, otpFor: "password" });
 
-    if (!verified || !verified.verified) {
+    if (!verified_data?.verified) {
       return {
         success: false,
         message: "First Verify your OTP",
