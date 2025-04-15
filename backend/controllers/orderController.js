@@ -352,6 +352,10 @@ const updateStatus = async (req, res) => {
     <td><strong>Oder Date:</strong></td>
     <td>${new Date(order.date).toLocaleDateString()}</td>
   </tr>
+   <tr>
+    <td><strong>Order Status:</strong></td>
+    <td><h4 style="color:green">${order.status}</h4></td>
+  </tr>
 </table>
 
     </div>
