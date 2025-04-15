@@ -237,18 +237,6 @@ const PlaceOrder = () => {
             </button>
             <button
               type="button"
-              onClick={() => setMethod("ssl")}
-              className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "ssl" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <img className="h-8 mx-4" src={assets.ssl_logo} alt="" />
-            </button>
-            <button
-              type="button"
               onClick={() => setMethod("cod")}
               className="hover:bg-gray-100 flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >

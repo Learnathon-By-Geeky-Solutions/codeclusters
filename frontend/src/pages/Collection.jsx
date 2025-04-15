@@ -47,7 +47,6 @@ const Collection = () => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'">
-      {/* Sidebar Filters */}
       <div className="min-w-60">
         <button
           type="button"
@@ -74,7 +73,6 @@ const Collection = () => {
           />
         </button>
 
-        {/* Category Filters */}
         <div
           className={` border border-gray-300 pl-5 py-3 mt-6 ${
             showFilter ? "" : "hidden"
@@ -97,7 +95,6 @@ const Collection = () => {
           </div>
         </div>
 
-        {/* SubCategory Filters */}
         <div
           className={` border border-gray-300 pl-5 py-3 mt-6 ${
             showFilter ? "" : "hidden"
@@ -121,7 +118,6 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Product Section */}
       <div className="flex-1">
         <div className="flex justify-between text-base sm:text-2xl mb-4">
           <Title
@@ -133,7 +129,6 @@ const Collection = () => {
             text2={"COLLECTIONS"}
           />
 
-          {/* Product Sorting */}
           <select
             onChange={(e) => setSortType(e.target.value)}
             className="border border-gray-300 text-sm px-2"
@@ -143,7 +138,6 @@ const Collection = () => {
             <option value="highLow">Sort by : High to Low</option>
           </select>
         </div>
-        {/* Display Products */}
 
         {loading && (
           <div className="flex justify-center">
@@ -185,7 +179,6 @@ const Collection = () => {
           </div>
         )}
 
-        {/* Pagination Controls */}
         {showSearch && searchResults.length > 0 ? (
           <div className="flex justify-center mt-5">
             <button

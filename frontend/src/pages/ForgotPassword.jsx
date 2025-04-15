@@ -19,7 +19,7 @@ const ForgotPassword = () => {
         toast.success("OTP sent to your email!");
 
         setTimeout(() => {
-          navigate("/verifyOtp", { state: { email } }); // Navigate with state
+          navigate("/verifyOtp/password", { state: { email } });
         }, 2000);
       } else {
         toast.error(res.data.message);

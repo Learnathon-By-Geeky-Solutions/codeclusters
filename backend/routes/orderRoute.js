@@ -13,24 +13,20 @@ import userAuth from "../middleware/userAuth.js";
 
 const orderRouter = express.Router();
 
-// Rate limiter: maximum of 100 requests per 15 minutes
 const limiter = RateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // max 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 
-//admin features
 orderRouter.post("/list", adminAuth, allOrders);
 orderRouter.post("/status", adminAuth, updateStatus);
 
-//payment features
 orderRouter.post("/place", userAuth, placeOrder);
 orderRouter.post("/stripe", userAuth, placeOrderStripe);
 
 //user feature
 orderRouter.post("/userorders", userAuth, limiter, userOrders);
 
-//verifyPayment
 orderRouter.post("/verifyStripe", userAuth, limiter, verifyStripe);
 
 export default orderRouter;

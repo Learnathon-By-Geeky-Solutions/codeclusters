@@ -8,7 +8,6 @@ const Footer = () => {
     <footer className="px-4 mt-10">
       <div className="max-w-7xl mx-auto px-4 py-4 ">
         <div className="grid grid-cols-1 sm:grid-cols-6 gap-8">
-          {/* Company Info */}
           <div className="sm:col-span-3 space-y-4">
             <h3 className="text-xl font-bold">Company Name</h3>
             <p className="text-sm">
@@ -64,7 +63,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Resources */}
           <div className="sm:col-span-1">
             <h3 className="text-lg font-semibold mb-2">Get in touch</h3>
             <ul className="">

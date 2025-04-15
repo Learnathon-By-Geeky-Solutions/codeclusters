@@ -5,26 +5,34 @@ import user from "../models/userModel.js";
 import generateToken from "../utils/generateJWT.js";
 import admin from "../models/adminModel.js";
 import mongoose from "mongoose";
-//route for login
+
 const login = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const User = await user.findOne({ email });
     if (User) {
-      const isPasswordCorrect = await bcrypt.compare(password, User.password);
-      if (isPasswordCorrect) {
-        res.status(201).json({
-          success: true,
-          _id: User._id,
-          name: User.name,
-          email: User.email,
-          token: generateToken(User._id),
-        });
+      if (User.verified) {
+        const isPasswordCorrect = await bcrypt.compare(password, User.password);
+        if (isPasswordCorrect) {
+          res.status(201).json({
+            success: true,
+            _id: User._id,
+            name: User.name,
+            email: User.email,
+            token: generateToken(User._id),
+          });
+        } else {
+          res.status(200).json({
+            error: "Password Incorrect",
+            message: "Password Incorrect",
+          });
+        }
       } else {
         res.status(200).json({
-          error: "Password Incorrect",
-          message: "Password Incorrect",
+          success: false,
+          emailVerified: false,
+          message: "Email not verified. Verify first",
         });
       }
     } else {
@@ -38,19 +46,15 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
-//route for register
 const register = asyncHandler(async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    //checking user exist or not
 
     const check = await user.findOne({ email });
     if (check) {
       return res.json({ success: false, message: "User already Exist" });
     }
 
-    //validating email & password
     if (!validator.isEmail(email)) {
       return res.json({ success: false, message: "Email is not valid" });
     }
@@ -60,8 +64,6 @@ const register = asyncHandler(async (req, res) => {
         message: "Password should be more than 8 character",
       });
     }
-
-    //hashing password
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -78,7 +80,6 @@ const register = asyncHandler(async (req, res) => {
         _id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        token: generateToken(newUser._id),
       });
     } else {
       res.status(400).json({
@@ -93,7 +94,6 @@ const register = asyncHandler(async (req, res) => {
   }
 });
 
-//route for adminLogin
 const adminLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -124,7 +124,6 @@ const adminLogin = asyncHandler(async (req, res) => {
   }
 });
 
-//route for createDefaultAdmin
 const createDefaultAdmin = asyncHandler(async () => {
   const salt = await bcrypt.genSalt(10);
   const existingAdmin = await admin.findOne({ email: process.env.ADMIN_EMAIL });
@@ -143,7 +142,6 @@ const createDefaultAdmin = asyncHandler(async () => {
   }
 });
 
-//route for changeAdminPassword
 const changeAdminPassword = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
   console.log(adminId);
@@ -152,7 +150,7 @@ const changeAdminPassword = asyncHandler(async (req, res) => {
   }
   const { currentPassword, newPassword } = req.body;
   try {
-    const Admin = await admin.findById(adminId); // Authenticated admin
+    const Admin = await admin.findById(adminId);
 
     const isMatch = await bcrypt.compare(currentPassword, Admin.password);
     if (!isMatch)
@@ -178,7 +176,7 @@ const userInfo = asyncHandler(async (req, res) => {
   const userId = req.userId;
 
   try {
-    const userData = await user.findById(userId).select("-password"); // omit password
+    const userData = await user.findById(userId).select("-password");
     if (!userData) {
       return res
         .status(404)

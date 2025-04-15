@@ -11,7 +11,6 @@ const OrderTrackingModal = ({ order, onClose }) => {
     { title: "Delivered", description: "Your order has arrived!" },
   ];
 
-  // Get the index of the current status based on order's status
   const currentStepIndex = statusSteps.findIndex(
     (step) => step.title.toLowerCase() === order.status.toLowerCase()
   );
@@ -29,7 +28,6 @@ const OrderTrackingModal = ({ order, onClose }) => {
           </button>
         </div>
 
-        {/* Order Timeline */}
         <div className="space-y-4">
           {statusSteps.map((step, index) => (
             <div key={index} className="flex items-start">
@@ -43,7 +41,6 @@ const OrderTrackingModal = ({ order, onClose }) => {
                 {index + 1}
               </div>
 
-              {/* Connecting Line */}
               {index < statusSteps.length - 1 && (
                 <div
                   className={`w-1 h-8 mx-4 ${
@@ -52,7 +49,6 @@ const OrderTrackingModal = ({ order, onClose }) => {
                 ></div>
               )}
 
-              {/* Step Details */}
               <div className="ml-4">
                 <h3
                   className={`font-semibold ${
@@ -69,7 +65,6 @@ const OrderTrackingModal = ({ order, onClose }) => {
           ))}
         </div>
 
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="mt-6 w-full py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"

@@ -2,7 +2,6 @@ import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
 import mongoose from "mongoose";
 
-// function for add product
 const addProduct = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
 
@@ -60,7 +59,6 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 });
 
-//function for update product
 const updateProduct = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
 
@@ -114,19 +112,16 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// new api for pagination
 const listProduct = asyncHandler(async (req, res) => {
   try {
     const { page = 1, limit = 20, category, subCategory, sort } = req.query;
     const skip = (page - 1) * limit;
     let filter = {};
 
-    // Apply category filter if selected
     if (category) {
       filter.category = { $in: category.split(",") };
     }
 
-    // Apply subcategory filter if selected
     if (subCategory) {
       filter.subCategory = { $in: subCategory.split(",") };
     }
@@ -155,7 +150,6 @@ const listProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// function for remove product
 const removeProduct = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
 
@@ -177,7 +171,6 @@ const removeProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// function for single product
 const singleProduct = asyncHandler(async (req, res) => {
   try {
     const { productId } = req.body;
@@ -193,8 +186,6 @@ const singleProduct = asyncHandler(async (req, res) => {
     });
   }
 });
-
-//function for search product
 
 const searchProducts = asyncHandler(async (req, res) => {
   try {
@@ -214,12 +205,10 @@ const searchProducts = asyncHandler(async (req, res) => {
       return res.json({ success: false, message: "Search query is empty" });
     }
 
-    // Apply category filter if selected
     if (category) {
       filter.category = { $in: category.split(",") };
     }
 
-    // Apply subcategory filter if selected
     if (subCategory) {
       filter.subCategory = { $in: subCategory.split(",") };
     }

@@ -9,7 +9,6 @@ import user from "../models/userModel.js";
 
 dotenv.config();
 
-// Configure email transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -22,7 +21,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Generate a 6-digit OTP
 const generateOTP = () => {
   try {
     return crypto.randomInt(100000, 999999).toString();
@@ -34,13 +32,12 @@ const generateOTP = () => {
   }
 };
 
-// Store OTP in MongoDB with expiry (10 minutes)
-const storeOTP = async (email, otp) => {
-  const expiry = new Date(Date.now() + 2 * 60 * 1000); // 10 minutes expiry
+const storeOTP = async (email, otp, otpFor) => {
+  const expiry = new Date(Date.now() + 2 * 60 * 1000);
   try {
     await OTP.findOneAndUpdate(
       { email },
-      { otp, expiry },
+      { otp, expiry, verified: false, otpFor },
       { upsert: true, new: true }
     );
   } catch (error) {
@@ -51,9 +48,8 @@ const storeOTP = async (email, otp) => {
   }
 };
 
-// Verify OTP
-const verifyOTP = async (email, otp) => {
-  const storedOtp = await OTP.findOne({ email });
+const verifyOTP = async (email, otp, otpFor) => {
+  const storedOtp = await OTP.findOne({ email, otpFor });
 
   try {
     if (!storedOtp)
@@ -66,7 +62,13 @@ const verifyOTP = async (email, otp) => {
       return { valid: false, message: "Invalid OTP" };
     }
 
-    await OTP.deleteOne({ email }); // Remove OTP after successful verification
+    await OTP.findOneAndUpdate({ email }, { verified: true });
+
+    if (otpFor === "email") {
+      await user.findOneAndUpdate({ email }, { verified: true }, { new: true });
+
+      await OTP.deleteOne({ email, otpFor: "email" });
+    }
     return { valid: true };
   } catch (error) {
     console.log("Error in otp controller verify otp", error.message);
@@ -76,7 +78,6 @@ const verifyOTP = async (email, otp) => {
   }
 };
 
-//reset password
 const resetPass = async (email, newPassword) => {
   try {
     if (newPassword.length < 8) {
@@ -86,16 +87,24 @@ const resetPass = async (email, newPassword) => {
       };
     }
 
+    const verified = await OTP.findOne({ email, otpFor: "password" });
+
+    if (!verified || !verified.verified) {
+      return {
+        success: false,
+        message: "First Verify your OTP",
+      };
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Update user's password in the database
     await user.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { new: true }
     );
-
+    await OTP.deleteOne({ email, otpFor: "password" });
     return {
       success: true,
       message: "Password reset",
@@ -108,157 +117,142 @@ const resetPass = async (email, newPassword) => {
   }
 };
 
-//route for forgotPassword
-const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+const sendOTPEmail = async ({ email, otp, purpose }) => {
+  const subject =
+    purpose === "password"
+      ? "🔒 Password Reset Request - Your OTP"
+      : "✅ Verify your email - Your OTP";
 
-  //validating email & password
+  const title = purpose === "password" ? "Password Reset" : "Verify Email";
+  const purposeText =
+    purpose === "password"
+      ? "We've received a request to reset your password"
+      : "You're almost there! Verify your email to get started.";
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          }
+          .header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          }
+          .content {
+            padding: 30px;
+            text-align: center;
+          }
+          .otp-box {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+          }
+          .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${title}</h1>
+            <p>${purposeText}</p>
+          </div>
+          <div class="content">
+            <p>Hello ${email},</p>
+            <p>Your OTP is:</p>
+            <div class="otp-box">${otp}</div>
+            <p>This OTP expires in 2 minutes.</p>
+          </div>
+          <div class="footer">
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+  return transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error: ", error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
+
+const processOTPRequest = async ({ email, otpFor, res }) => {
   if (!validator.isEmail(email)) {
     return res.json({ success: false, message: "Email is not valid" });
   }
-  //checking user exist or not
+
   const User = await user.findOne({ email });
-  try {
-    if (User) {
-      const otp = generateOTP();
-      await storeOTP(email, otp);
-      console.log(`OTP for ${email}: ${otp}`); // In production, send via email/SMS
-
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "🔒 Password Reset Request - Your OTP",
-        html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 0;
-                            background-color: #f4f4f4;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background: white;
-                            border-radius: 10px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                        }
-                        .header {
-                            background: #007bff;
-                            color: white;
-                            padding: 20px;
-                            text-align: center;
-                            border-top-left-radius: 10px;
-                            border-top-right-radius: 10px;
-                        }
-                        .content {
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        .otp-box {
-                            background: #f8f9fa;
-                            padding: 20px;
-                            margin: 20px 0;
-                            border-radius: 8px;
-                            display: inline-block;
-                            cursor: pointer;
-                            font-size: 24px;
-                            font-weight: bold;
-                            letter-spacing: 5px;
-                            transition: all 0.3s ease;
-                        }
-                        .otp-box:hover {
-                            background: #e9ecef;
-                            transform: scale(1.05);
-                        }
-                        .footer {
-                            padding: 20px;
-                            text-align: center;
-                            color: #666;
-                            font-size: 12px;
-                            border-bottom-left-radius: 10px;
-                            border-bottom-right-radius: 10px;
-                        }
-                        .warning {
-                            color: #dc3545;
-                            margin-top: 20px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Password Reset</h1>
-                            <p>We've received a request to reset your password</p>
-                        </div>
-                        <div class="content">
-                            <p>Hello ${User.email},</p>
-                            <p>Use the following One-Time Password (OTP) to reset your password:</p>
-                            <div class="otp-box" onclick="copyOTP('${otp}')" title="Click to copy">
-                                ${otp}
-                            </div>
-                            <p>Click the OTP above to copy it to your clipboard.<br>
-                            If that doesn't work, please manually copy the code.</p>
-                            <p class="warning">This OTP expires in 2 minutes</p>
-                        </div>
-                        <div class="footer">
-                            <p>If you didn't request this, please ignore this email.</p>
-                            <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
-                        </div>
-                    </div>
-                    <script>
-                        function copyOTP(otp) {
-                            try {
-                                navigator.clipboard.writeText(otp)
-                                    .then(() => alert('OTP copied to clipboard!'))
-                                    .catch(() => alert('Please manually copy the OTP: ' + otp));
-                            } catch (err) {
-                                alert('Please manually copy the OTP: ' + otp);
-                            }
-                        }
-                    </script>
-                </body>
-                </html>
-            `,
-      };
-
-      await transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Error: ", error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
-      res.json({ success: true, message: "OTP sent successfully" });
-    } else {
-      return res.json({ success: false, message: "User doesn't Exist" });
-    }
-  } catch (error) {
-    console.log("Error in forgot password controller", error.message);
-    res.status(500).json({
-      error: "Internal server error",
-    });
+  if (!User) {
+    return res.json({ success: false, message: "User doesn't Exist" });
   }
+
+  const otp = generateOTP();
+  await storeOTP(email, otp, otpFor);
+  console.log(`OTP for ${email}: ${otp}`);
+  await sendOTPEmail({ email, otp, purpose: otpFor });
+
+  return res.json({ success: true, message: "OTP sent successfully" });
+};
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  await processOTPRequest({ email, otpFor: "password", res });
 });
 
-//route for verifyOtp
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  await processOTPRequest({ email, otpFor: "email", res });
+});
+
 const verifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
-  //validating email & password
+  const { otpFor } = req.query;
+
   if (!validator.isEmail(email)) {
     return res.json({ success: false, message: "Email is not valid" });
   }
-  //checking user exist or not
+
   const User = await user.findOne({ email });
   try {
     if (User) {
-      const result = await verifyOTP(email, otp);
+      const result = await verifyOTP(email, otp, otpFor);
       res.json({ result });
     } else {
       return res.json({ success: false, message: "User doesn't Exist" });
@@ -271,15 +265,13 @@ const verifyOtp = asyncHandler(async (req, res) => {
   }
 });
 
-//route for resetPass
 const resetPassword = asyncHandler(async (req, res) => {
   const { email, newPassword } = req.body;
 
-  //validating email & password
   if (!validator.isEmail(email)) {
     return res.json({ success: false, message: "Email is not valid" });
   }
-  //checking user exist or not
+
   const User = await user.findOne({ email });
 
   try {
@@ -298,4 +290,11 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
-export { generateOTP, storeOTP, verifyOtp, forgotPassword, resetPassword };
+export {
+  generateOTP,
+  storeOTP,
+  verifyOtp,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+};

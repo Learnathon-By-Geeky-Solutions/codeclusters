@@ -31,8 +31,6 @@ const Category = () => {
   };
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2> */}
-
       <div className="text-center py-8 text-3xl">
         <Title text1={"DISCOVER YOUR"} text2={"STYLE"} />
         <p className="w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600">

@@ -1,7 +1,6 @@
 import asyncHandler from "express-async-handler";
 import reviewModel from "../models/reviewModel.js";
 
-// Get all reviews for a product
 const getReviews = asyncHandler(async (req, res) => {
   try {
     const { productId } = req.query;
@@ -18,7 +17,6 @@ const getReviews = asyncHandler(async (req, res) => {
   }
 });
 
-// Create a new review
 const addReviews = asyncHandler(async (req, res) => {
   try {
     const { productId, email, rating, comment } = req.body;
