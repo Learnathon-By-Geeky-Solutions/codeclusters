@@ -17,14 +17,12 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
 
-  //state for search
   const [showSearch, setShowSearch] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchTotalPages, setSearchTotalPages] = useState(1);
   const [searchPage, setSearchPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // State for Pagination & Filters
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState([]);
@@ -33,7 +31,6 @@ const ShopContextProvider = (props) => {
 
   const navigate = useNavigate();
 
-  //Search
   const debouncedSearch = async () => {
     if (!searchQuery) {
       setSearchResults([]);
@@ -76,7 +73,6 @@ const ShopContextProvider = (props) => {
     }
     setCartItems(cartData);
 
-    // If user is logged in, sync with backend immediately
     if (token) {
       try {
         await axios.post(
@@ -126,7 +122,6 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   };
 
-  // get product data using pagination
   const getProductsData = async (
     page = 1,
     category = [],
@@ -166,9 +161,7 @@ const ShopContextProvider = (props) => {
         { headers: { token } }
       );
       if (res.data.success) {
-        // setCartItems(res.data.cartData); pld
-        return res.data.cartData; // Return cart data for merging
-        // setUsername(res.data.name);
+        return res.data.cartData;
       }
     } catch (error) {
       console.log(error);
@@ -179,7 +172,6 @@ const ShopContextProvider = (props) => {
   const mergeCart = async (localCart, serverCart) => {
     let mergedCart = structuredClone(serverCart);
 
-    // Merge local cart into server cart
     for (const itemId in localCart) {
       if (mergedCart[itemId]) {
         for (const size in localCart[itemId]) {
@@ -194,10 +186,8 @@ const ShopContextProvider = (props) => {
       }
     }
 
-    // Update state with merged cart
     setCartItems(mergedCart);
 
-    // Sync merged cart with backend
     if (token) {
       try {
         for (const itemId in mergedCart) {
@@ -251,7 +241,7 @@ const ShopContextProvider = (props) => {
     if (token) {
       const syncCart = async () => {
         const serverCart = await getUserCart(token);
-        await mergeCart(cartItems, serverCart); // Merge local cart with server cart
+        await mergeCart(cartItems, serverCart);
       };
       syncCart();
     }
@@ -259,11 +249,11 @@ const ShopContextProvider = (props) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       debouncedSearch();
-    }, 500); // Delay API call by 500ms
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchQuery, searchPage]);
-  // Fetch products when filters change
+
   useEffect(() => {
     getProductsData(currentPage, category, subCategory, sortType);
   }, [currentPage, category, subCategory, sortType]);
