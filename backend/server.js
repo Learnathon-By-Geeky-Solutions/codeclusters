@@ -9,19 +9,15 @@ import reviewRouter from "./routes/reviewRoutes.js";
 import cartRouter from "./routes/cartRoute.js";
 import { createDefaultAdmin } from "./controllers/userController.js";
 
-// App Config
-
 const app = express();
 const port = process.env.PORT || 5000;
 connectDB();
 
-//middlewares
 app.use(express.json());
 app.use(cors());
 
 createDefaultAdmin();
 
-//API endpoints
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/order", orderRouter);
