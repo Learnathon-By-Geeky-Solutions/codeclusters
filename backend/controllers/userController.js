@@ -36,7 +36,9 @@ const login = asyncHandler(async (req, res) => {
         });
       }
     } else {
-      return res.json({ success: false, message: "User doesn't Exist" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -114,7 +116,9 @@ const adminLogin = asyncHandler(async (req, res) => {
         });
       }
     } else {
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid credentials" });
     }
   } catch (error) {
     console.log("Error in adminLogin controller", error.message);
@@ -144,7 +148,7 @@ const createDefaultAdmin = asyncHandler(async () => {
 
 const changeAdminPassword = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
-  console.log(adminId);
+
   if (!mongoose.isValidObjectId(adminId)) {
     return res.status(400).json({ success: false, message: "Invalid userId" });
   }

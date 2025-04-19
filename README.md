@@ -1,3 +1,11 @@
+# 🚀 CodeClusters
+
+yourShop is a full-stack web application built with Node.js, MongoDB, and React.js, featuring:
+
+- A **user-facing frontend**
+- A **backend API server**
+- An **admin dashboard** for internal management
+
 ## 🌐 Live Website
 
 <p align="center">
@@ -199,3 +207,7 @@ Now your development environment should be up and running for:
 ## 📬 Questions?
 
 Feel free to [open an issue](https://github.com/Learnathon-By-Geeky-Solutions/codeclusters/issues) if you run into problems or have suggestions.
+
+## 📄 License
+
+MIT License © [CodeClusters](https://github.com/Learnathon-By-Geeky-Solutions/codeclusters)

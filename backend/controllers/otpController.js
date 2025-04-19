@@ -219,7 +219,9 @@ const processOTPRequest = async ({ email, otpFor, res }) => {
 
   const User = await user.findOne({ email });
   if (!User) {
-    return res.json({ success: false, message: "User doesn't Exist" });
+    return res
+      .status(404)
+      .json({ success: false, message: "User doesn't Exist" });
   }
 
   const otp = generateOTP();
@@ -227,7 +229,9 @@ const processOTPRequest = async ({ email, otpFor, res }) => {
   console.log(`OTP for ${email}: ${otp}`);
   await sendOTPEmail({ email, otp, purpose: otpFor });
 
-  return res.json({ success: true, message: "OTP sent successfully" });
+  return res
+    .status(200)
+    .json({ success: true, message: "OTP sent successfully" });
 };
 
 const forgotPassword = asyncHandler(async (req, res) => {
@@ -246,14 +250,16 @@ const verifyOtp = asyncHandler(async (req, res) => {
   const { otpFor } = req.query;
 
   if (!validator.isEmail(email)) {
-    return res.json({ success: false, message: "Email is not valid" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is not valid" });
   }
 
   const User = await user.findOne({ email });
   try {
     if (User) {
       const result = await verifyOTP(email, otp, otpFor);
-      res.json({ result });
+      res.status(200).json({ result });
     } else {
       return res.json({ success: false, message: "User doesn't Exist" });
     }
@@ -269,7 +275,9 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { email, newPassword } = req.body;
 
   if (!validator.isEmail(email)) {
-    return res.json({ success: false, message: "Email is not valid" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is not valid" });
   }
 
   const User = await user.findOne({ email });
@@ -280,7 +288,9 @@ const resetPassword = asyncHandler(async (req, res) => {
 
       res.json(result);
     } else {
-      return res.json({ success: false, message: "User doesn't Exist" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User doesn't Exist" });
     }
   } catch (error) {
     console.log("Error in reset password controller", error.message);
