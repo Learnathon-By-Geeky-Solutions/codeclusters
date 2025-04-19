@@ -354,7 +354,7 @@ const updateStatus = async (req, res) => {
   </tr>
    <tr>
     <td><strong>Order Status:</strong></td>
-    <td><h4 style="color:green">${order.status}</h4></td>
+    <td><h4 style="color:green">${status}</h4></td>
   </tr>
 </table>
 
