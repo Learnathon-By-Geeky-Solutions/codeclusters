@@ -79,8 +79,123 @@ developed with the MERN stack (MongoDB, Express.js, React, Node.js). Designed to
 
 With MongoDB as our database, we ensure scalable, flexible, and high-performance data handling—perfect for modern e-commerce needs..
 
-## 📦Resources
+## 📁 Project Structure Overview
 
-- [Project Documentation](docs/)
-- [Development Setup](docs/setup.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+```
+codeclusters/
+├── admin/      # Admin dashboard (React.js)
+├── backend/    # API server (Node.js)
+├── frontend/   # User-facing app (React.js)
+```
+
+---
+
+## 🛠️ Installation & Setup
+
+## 📦 Prerequisites
+
+Make sure you have:
+
+- **Node.js** (v18 or higher)
+- **npm** (or **pnpm**)
+- **Git**
+
+---
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Learnathon-By-Geeky-Solutions/codeclusters.git
+cd codeclusters
+```
+
+### 2. Install Dependencies
+
+#### Backend
+
+```bash
+cd backend
+npm install
+```
+
+#### Frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+#### Admin Panel
+
+```bash
+cd ../admin
+npm install
+```
+
+---
+
+## ▶️ Running the Project
+
+### 1. Start Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+### 2. Start Frontend
+
+Open a new terminal window/tab:
+
+```bash
+cd frontend
+npm run dev
+```
+
+### 3. Start Admin Panel
+
+Open another terminal:
+
+```bash
+cd admin
+npm run dev
+```
+
+By default:
+
+- **Frontend** runs on `http://localhost:5173`
+- **Admin Panel** runs on `http://localhost:5174` (or another port if specified)
+- **Backend** runs on `http://localhost:5000`
+
+---
+
+## ⚙️ Environment Variables
+
+Check for `.env.example` in each of the three folders (`backend`, `frontend`, `admin`). Copy and rename to `.env`, then configure as needed:
+
+```bash
+cp .env.example .env
+```
+
+Make sure all required environment variables (like database URIs, API endpoints, secrets) are set properly.
+
+---
+
+## ✅ Done!
+
+Now your development environment should be up and running for:
+
+- 📱 **Frontend** (user-facing)
+- 🛠️ **Backend** (API and logic)
+- 👩‍💼 **Admin** (dashboard/control panel)
+
+---
+
+## 📄 Additional Resources
+
+- [Project Repository](https://github.com/Learnathon-By-Geeky-Solutions/codeclusters)
+- [Issues & Discussions](https://github.com/Learnathon-By-Geeky-Solutions/codeclusters/issues)
+
+## 📬 Questions?
+
+Feel free to [open an issue](https://github.com/Learnathon-By-Geeky-Solutions/codeclusters/issues) if you run into problems or have suggestions.
