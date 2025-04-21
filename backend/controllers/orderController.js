@@ -162,12 +162,15 @@ const verifyStripe = async (req, res) => {
   }
   try {
     if (success === "true") {
-      await orderModel.findByIdAndUpdate(orderId, { payment: true });
+      await orderModel.findByIdAndUpdate(
+        { _id: { $eq: orderId } },
+        { payment: true }
+      );
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
       res.status(200).json({ success: true });
     } else {
-      await orderModel.findByIdAndDelete(orderId);
+      orderModel.findOneAndDelete({ _id: { $eq: orderId } });
       res.status(200).json({ success: false });
     }
   } catch (error) {
