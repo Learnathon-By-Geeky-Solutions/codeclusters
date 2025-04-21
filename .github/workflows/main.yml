@@ -1,6 +1,6 @@
 name: Build 
  
- on: 
+on: 
    push:
        branches: [main]
    pull_request:
@@ -9,7 +9,7 @@ name: Build
  
  
  
- jobs:
+jobs:
   sonarcloud:
      name: Analyze with SonarCloud
      runs-on: ubuntu-latest
