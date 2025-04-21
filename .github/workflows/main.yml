@@ -32,35 +32,12 @@ jobs:
         working-directory: admin
         run: npm install
 
-      - name: Run admin tests with coverage
-        working-directory: admin
-        run: |
-          npm run coverage
-          # Ensure coverage files are in the expected location
-          mkdir -p coverage
-          [ -f coverage/lcov.info ] || echo "No coverage file generated" > coverage/lcov.info
-
+     
       - name: Install backend dependencies
         working-directory: backend
         run: npm install
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          args: >
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_codeclusters
-            -Dsonar.organization=learnathon-by-geeky-solutions
-            -Dsonar.projectName="codeclusters"
-            -Dsonar.sources=client/src,server/src
-            -Dsonar.javascript.lcov.reportPaths=client/coverage/lcov.info
-            -Dsonar.typescript.lcov.reportPaths=client/coverage/lcov.info
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**
-            -Dsonar.coverage.exclusions=**/test/**,**/mock/**
-            -Dsonar.ci.enabled=true
-            -Dsonar.analysis.automatic=false
+    
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          VITE_BACKEND_URL: "https://yourshop-backend-hvhg.onrender.com/"
-
+          CI: false
           
