@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",
+    "@vitest/ui": "^3.1.2",
     "axios": "^1.8.3",
     "dompurify": "^3.2.5",
     "prop-types": "^15.8.1",

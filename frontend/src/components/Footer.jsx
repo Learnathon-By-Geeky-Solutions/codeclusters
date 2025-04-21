@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -14,15 +15,16 @@ const Footer = () => {
               Creating amazing experiences and building the future of web
               development.
             </p>
+
             <div className="flex space-x-4">
               <Link to="#" className="hover:text-gray-700 transition-colors">
-                <Github className="w-5 h-5" />
+                <FaGithub className="w-5 h-5" />
               </Link>
               <Link to="#" className="hover:text-gray-700 transition-colors">
-                <Twitter className="w-5 h-5" />
+                <FaTwitter className="w-5 h-5" />
               </Link>
               <Link to="#" className="hover:text-gray-700 transition-colors">
-                <Linkedin className="w-5 h-5" />
+                <FaLinkedin className="w-5 h-5" />
               </Link>
               <Link to="#" className="hover:text-gray-700 transition-colors">
                 <Mail className="w-5 h-5" />

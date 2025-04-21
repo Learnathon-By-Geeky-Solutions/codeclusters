@@ -82,7 +82,6 @@ describe("App Component", () => {
       expect(localStorage.getItem("token")).toBe("fake-token");
     });
 
-    // Optionally verify the layout after login
     expect(screen.getByTestId("navbar")).toBeInTheDocument();
     expect(screen.getByText("Home Page")).toBeInTheDocument();
   });
