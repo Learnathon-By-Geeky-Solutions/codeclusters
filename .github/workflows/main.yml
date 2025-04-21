@@ -49,14 +49,14 @@ jobs:
          uses: SonarSource/sonarcloud-github-action@v2
          with:
            args: >
-             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
              -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_codeclusters
              -Dsonar.organization=learnathon-by-geeky-solutions
              -Dsonar.projectName="codeclusters"
              -Dsonar.sources=frontend/src,backend,admin/src
              -Dsonar.javascript.lcov.reportPaths=admin/coverage/lcov.info
              -Dsonar.typescript.lcov.reportPaths=admin/coverage/lcov.info
-             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,App.jsx
+             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,
              -Dsonar.coverage.exclusions=**/test/**,**/mock/**
              -Dsonar.ci.enabled=true
              -Dsonar.analysis.automatic=false
