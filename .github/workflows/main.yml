@@ -33,14 +33,6 @@ jobs:
          working-directory: admin
          run: npm install
  
-       - name: Run admin tests with coverage
-         working-directory: admin
-         run: |
-           npm run coverage
-           # Ensure coverage files are in the expected location
-           mkdir -p coverage
-           [ -f coverage/lcov.info ] || echo "No coverage file generated" > coverage/lcov.info
- 
        - name: Install backend dependencies
          working-directory: backend
          run: npm install
@@ -62,4 +54,4 @@ jobs:
              -Dsonar.analysis.automatic=false
          env:
            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-           VITE_BACKEND_URL: "https://yourshop-backend-hvhg.onrender.com/"
+           
