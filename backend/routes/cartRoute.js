@@ -14,7 +14,7 @@ const limiter = RateLimit({
   max: 100,
 });
 
-cartRouter.post("/get", userAuth, getUserCart);
+cartRouter.post("/get", userAuth, limiter, getUserCart);
 cartRouter.post("/add", userAuth, limiter, addToCart);
 cartRouter.post("/update", userAuth, limiter, updateToCart);
 
