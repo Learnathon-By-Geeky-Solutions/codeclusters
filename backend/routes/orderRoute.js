@@ -19,7 +19,7 @@ const limiter = RateLimit({
 });
 
 orderRouter.post("/list", adminAuth, allOrders);
-orderRouter.post("/status", adminAuth, updateStatus);
+orderRouter.post("/status", adminAuth, limiter, updateStatus);
 
 orderRouter.post("/place", userAuth, placeOrder);
 orderRouter.post("/stripe", userAuth, placeOrderStripe);
