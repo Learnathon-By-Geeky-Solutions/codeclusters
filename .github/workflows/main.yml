@@ -53,9 +53,9 @@ jobs:
              -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_codeclusters
              -Dsonar.organization=learnathon-by-geeky-solutions
              -Dsonar.projectName="codeclusters"
-             -Dsonar.sources=client/src,server/src
-             -Dsonar.javascript.lcov.reportPaths=client/coverage/lcov.info
-             -Dsonar.typescript.lcov.reportPaths=client/coverage/lcov.info
+             -Dsonar.sources=frontend/src,backend/src,admin/src
+             -Dsonar.javascript.lcov.reportPaths=admin/coverage/lcov.info
+             -Dsonar.typescript.lcov.reportPaths=admin/coverage/lcov.info
              -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**
              -Dsonar.coverage.exclusions=**/test/**,**/mock/**
              -Dsonar.ci.enabled=true
