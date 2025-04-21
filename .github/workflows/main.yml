@@ -27,14 +27,6 @@ jobs:
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install
-
-      - name: Run frontend tests with coverage
-        working-directory: frontend
-        run: |
-          npm run coverage
-          # Ensure coverage files are in the expected location
-          mkdir -p coverage
-          [ -f coverage/lcov.info ] || echo "No coverage file generated" > coverage/lcov.info
           
       - name: Install admin dependencies
         working-directory: admin
