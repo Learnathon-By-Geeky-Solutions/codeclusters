@@ -22,7 +22,7 @@ orderRouter.post("/list", adminAuth, limiter, allOrders);
 orderRouter.post("/status", adminAuth, limiter, updateStatus);
 
 orderRouter.post("/place", userAuth, placeOrder);
-orderRouter.post("/stripe", userAuth, placeOrderStripe);
+orderRouter.post("/stripe", userAuth, limiter, placeOrderStripe);
 
 //user feature
 orderRouter.post("/userorders", userAuth, limiter, userOrders);
