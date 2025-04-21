@@ -71,7 +71,7 @@ const Orders = () => {
                 <div className="flex items-center gap-3 mt-1 text-base text-gray700">
                   <p>
                     {currency}
-                    {item.price}
+                    {item.sellingPrice}
                   </p>
                   <p>Quantity:{item.quantity}</p>
                   <p>Size: {item.size}</p>

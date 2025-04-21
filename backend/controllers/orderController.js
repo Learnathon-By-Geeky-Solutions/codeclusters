@@ -68,7 +68,7 @@ const placeOrder = async (req, res) => {
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    res.json({ success: true, message: "Order Placed" });
+    res.status(200).json({ success: true, message: "Order Placed" });
   } catch (error) {
     console.log("Error in placeOrder controller", error.message);
     res.json({ success: false, message: error.message });
@@ -121,7 +121,7 @@ const placeOrderStripe = async (req, res) => {
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100,
+        unit_amount: item.sellingPrice * 100,
       },
       quantity: item.quantity,
     }));
@@ -143,14 +143,13 @@ const placeOrderStripe = async (req, res) => {
       mode: "payment",
     });
 
-    res.json({ success: true, session_url: session.url });
+    res.status(200).json({ success: true, session_url: session.url });
   } catch (error) {
     console.log("Error in stripe controller", error.message);
     res.json({ success: false, message: error.message });
   }
 };
 
-// verify Stripe
 const verifyStripe = async (req, res) => {
   const userId = req.userId;
 
@@ -166,10 +165,10 @@ const verifyStripe = async (req, res) => {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-      res.json({ success: true });
+      res.status(200).json({ success: true });
     } else {
       await orderModel.findByIdAndDelete(orderId);
-      res.json({ success: false });
+      res.status(200).json({ success: false });
     }
   } catch (error) {
     console.log("Error in verifyStripe controller", error.message);
@@ -193,7 +192,7 @@ const allOrders = async (req, res) => {
     const skip = Math.max((effectivePage - 1) * limit, 0);
     const orders = await orderModel.find({}).skip(skip).limit(parseInt(limit));
 
-    res.json({
+    res.status(200).json({
       success: true,
       orders,
       totalOrders,
@@ -377,7 +376,7 @@ const updateStatus = async (req, res) => {
         }
       });
 
-      res.json({ success: true, message: "Status Updated" });
+      res.status(200).json({ success: true, message: "Status Updated" });
     }
   } catch (error) {
     console.log("Error in updateStatus controller", error.message);
