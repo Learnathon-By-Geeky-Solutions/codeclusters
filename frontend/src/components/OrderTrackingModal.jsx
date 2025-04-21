@@ -30,7 +30,7 @@ const OrderTrackingModal = ({ order, onClose }) => {
 
         <div className="space-y-4">
           {statusSteps.map((step, index) => (
-            <div key={index} className="flex items-start">
+            <div key={step.title} className="flex items-start">
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full border-2 text-sm font-bold ${
                   index <= currentStepIndex

@@ -22,7 +22,6 @@ const Login = () => {
         email,
         password,
       });
-
       if (res.data.success) {
         setUser(res.data);
 
@@ -45,7 +44,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -120,6 +119,7 @@ const Login = () => {
               required
               placeholder="Password"
               className="w-full p-2 border border-gray-800"
+              minLength={8}
             />
             <div className="w-full flex justify-between">
               <Link

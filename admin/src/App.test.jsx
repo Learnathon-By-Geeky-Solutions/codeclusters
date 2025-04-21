@@ -16,7 +16,7 @@ vi.mock("./components/Sidebar", () => ({
 vi.mock("./components/Login", () => ({
   default: ({ setToken }) => (
     <div data-testid="login">
-      Login Component
+      Login Component{" "}
       <button onClick={() => setToken("fake-token")}>Login</button>
     </div>
   ),
