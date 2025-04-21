@@ -15,7 +15,7 @@ const limiter = RateLimit({
 });
 
 cartRouter.post("/get", userAuth, getUserCart);
-cartRouter.post("/add", userAuth, addToCart);
+cartRouter.post("/add", userAuth, limiter, addToCart);
 cartRouter.post("/update", userAuth, limiter, updateToCart);
 
 export default cartRouter;
