@@ -45,7 +45,7 @@ const Orders = () => {
     loadOrderData();
     setSelectedOrder(item);
   };
-  console.log(orderData);
+
   useEffect(() => {
     loadOrderData();
   }, [token]);
