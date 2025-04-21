@@ -45,6 +45,7 @@ const Orders = () => {
     loadOrderData();
     setSelectedOrder(item);
   };
+  console.log(orderData);
   useEffect(() => {
     loadOrderData();
   }, [token]);
@@ -55,9 +56,9 @@ const Orders = () => {
       </div>
 
       <div>
-        {orderData.map((item, index) => (
+        {orderData.map((item) => (
           <div
-            key={index}
+            key={item._id}
             className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
             <div className="flex items-start gap-6 text-sm">

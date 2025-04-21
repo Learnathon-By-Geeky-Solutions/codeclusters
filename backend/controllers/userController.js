@@ -21,9 +21,11 @@ const login = asyncHandler(async (req, res) => {
             name: User.name,
             email: User.email,
             token: generateToken(User._id),
+            emailVerified: User.verified,
           });
         } else {
           res.status(200).json({
+            emailVerified: User.verified,
             error: "Password Incorrect",
             message: "Password Incorrect",
           });
