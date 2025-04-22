@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 frontend/src/pages/PN.jsx
+
+workflow.yaml
