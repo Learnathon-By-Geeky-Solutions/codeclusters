@@ -2,7 +2,8 @@ name: Build
  
 on: 
    push:
-       branches: [main]
+       branches: 
+        -main
    pull_request:
        types: [opened, synchronize, reopened]
            
@@ -22,7 +23,7 @@ jobs:
        - name: Setup Node.js
          uses: actions/setup-node@v3
          with:
-           node-version: 20
+           node-version: "20.x"
  
        - name: Install frontend dependencies
          working-directory: frontend
@@ -36,19 +37,12 @@ jobs:
        - name: Install backend dependencies
          working-directory: backend
          run: npm install
- 
+       - name: Run admin tests with coverage
+         working-directory: admin
+         run: 
+           npm run coverage
        - name: SonarCloud Scan
          uses: SonarSource/sonarcloud-github-action@v2
-         with:
-           args: >
-             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-             -Dsonar.projectKey=Learnathon-By-Geeky-Solutions_codeclusters
-             -Dsonar.organization=learnathon-by-geeky-solutions
-             -Dsonar.projectName="codeclusters"
-             -Dsonar.sources=frontend/src,backend,admin/src
-             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,
-             -Dsonar.ci.enabled=true
-             -Dsonar.analysis.automatic=false
          env:
            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
            
