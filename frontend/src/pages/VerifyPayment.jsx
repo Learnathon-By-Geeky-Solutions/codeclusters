@@ -19,6 +19,7 @@ const VerifyPayment = () => {
         { success, orderId },
         { headers: { token } }
       );
+
       if (res.data.success) {
         setLoading(false);
         setCartItems({});
