@@ -162,7 +162,7 @@ const verifyStripe = async (req, res) => {
   }
   try {
     if (success === "true") {
-      await orderModel.findByIdAndUpdate(
+      await orderModel.findOneAndUpdate(
         { _id: { $eq: orderId } },
         { payment: true }
       );
