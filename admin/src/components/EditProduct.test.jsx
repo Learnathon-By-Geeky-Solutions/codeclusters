@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import EditProduct from "./EditProduct";
-import { vi } from "vitest";
-import { toast } from "react-toastify";
+import { vi, describe, it, expect } from "vitest";
 
 vi.mock("axios");
 vi.mock("react-toastify", () => ({

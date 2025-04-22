@@ -27,7 +27,6 @@ const Navbar = ({ setToken, token }) => {
           Logout
         </button>
       </div>
-      {/* ChangePassword Modal Component */}
       <ChangePassword
         isOpen={showChangePassword}
         onClose={() => setShowChangePassword(false)}
