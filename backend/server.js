@@ -17,7 +17,7 @@ connectDB();
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? "https://yourshop2.netlify.app/"
+      ? "https://yourshop2.netlify.app"
       : "*",
 };
 
