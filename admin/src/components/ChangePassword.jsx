@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { backendUrl } from "../App";
 import PropTypes from "prop-types";
 
-// PasswordInput component with prop validation
 const PasswordInput = ({ id, value, onChange, placeholder }) => {
   return (
     <div className="mb-4">
