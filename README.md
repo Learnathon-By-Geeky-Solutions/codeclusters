@@ -10,7 +10,7 @@ yourShop is a full-stack web application built with Node.js, MongoDB, and React.
 
 <p align="center">
   <a href="https://yourshop2.netlify.app/">
-    <img src="https://img.shields.io/badge/Fontend-Visit_Now-brightgreen?style=for-the-badge&logo=internet-explorer" alt="Live Site" />
+    <img src="https://img.shields.io/badge/Frontend-Visit_Now-brightgreen?style=for-the-badge&logo=internet-explorer" alt="Live Site" />
   </a>
    <a href="https://admin-yourshop.netlify.app/">
     <img src="https://img.shields.io/badge/Backend-Visit_Now-brightgreen?style=for-the-badge&logo=internet-explorer" alt="Live Site" />
