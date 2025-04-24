@@ -3,9 +3,10 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
-
+import BeatLoader from "react-spinners/BeatLoader";
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const { navigate, backendUrl } = useContext(ShopContext);
@@ -14,6 +15,7 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (newPassword.length < 8) {
       toast.error("Password must be greater than 8 character");
       return;
@@ -28,10 +30,11 @@ const ResetPassword = () => {
 
         if (res.data.success) {
           toast.success(res.data.message);
-          setTimeout(() => navigate("/login", { state: { email } }), 2000);
+          setTimeout(() => navigate("/login", { state: { email } }), 500);
         } else {
           toast.error(res.data.message);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
         toast.error(error.message);
@@ -83,8 +86,13 @@ const ResetPassword = () => {
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded"
+            disabled={loading}
           >
-            Reset Password
+            {loading ? (
+              <BeatLoader color="#ffffff" size={8} />
+            ) : (
+              "Reset Password"
+            )}
           </button>
         </form>
       </div>

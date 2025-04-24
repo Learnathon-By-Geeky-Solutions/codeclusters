@@ -3,15 +3,17 @@ import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { toast } from "react-toastify";
-
+import BeatLoader from "react-spinners/BeatLoader";
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const { otpFor } = useParams();
   const location = useLocation();
   const { navigate, backendUrl } = useContext(ShopContext);
   const email = location.state?.email || "";
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(
         `${backendUrl}/api/user/verify?otpFor=${otpFor}`,
@@ -26,14 +28,15 @@ const VerifyOTP = () => {
         if (otpFor === "password") {
           setTimeout(
             () => navigate("/resetPassword", { state: { email } }),
-            2000
+            500
           );
         } else {
-          setTimeout(() => navigate("/login", { state: { email } }), 2000);
+          setTimeout(() => navigate("/login", { state: { email } }), 500);
         }
       } else {
         toast.error(res.data.result.message);
       }
+      setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -67,8 +70,9 @@ const VerifyOTP = () => {
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded"
+            disabled={loading}
           >
-            Verify OTP
+            {loading ? <BeatLoader color="#ffffff" size={8} /> : "Verify OTP"}
           </button>
         </form>
       </div>

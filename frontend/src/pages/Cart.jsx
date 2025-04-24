@@ -19,7 +19,8 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
   const handleCheckout = () => {
     if (!token) {
-      return toast.warning("You have to  login first");
+      toast.warning("You have to  login first");
+      return navigate("/login?prev-page=cart");
     }
 
     navigate("/placeOrder");
