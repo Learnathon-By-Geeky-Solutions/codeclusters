@@ -5,16 +5,19 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
-
+import BeatLoader from "react-spinners/BeatLoader";
 const Login = () => {
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
+  const queryParams = new URLSearchParams(location.search);
+  const page = queryParams.get("prev-page");
   const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
   const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState(location.state?.email || "");
+  const [loading, setLoading] = useState(false);
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const password = e.target.password.value;
 
     try {
@@ -22,6 +25,7 @@ const Login = () => {
         email,
         password,
       });
+      setLoading(false);
       if (res.data.success) {
         setUser(res.data);
 
@@ -87,7 +91,11 @@ const Login = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/");
+      if (page === "cart") {
+        navigate("/cart");
+      } else {
+        navigate("/");
+      }
     }
   }, [token]);
 
@@ -139,8 +147,9 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-black text-white py-2 rounded"
+              disabled={loading}
             >
-              Login
+              {loading ? <BeatLoader color="#ffffff" size={8} /> : "Login"}
             </button>
           </form>
         )}
@@ -203,7 +212,7 @@ const Login = () => {
               type="submit"
               className="w-full bg-black text-white py-2 rounded"
             >
-              Sign Up
+              {loading ? <BeatLoader color="#ffffff" size={8} /> : "Sign Up"}
             </button>
           </form>
         )}
