@@ -307,7 +307,10 @@ const Add = ({ token }) => {
           Add to bestseller
         </label>
       </div>
-      <button className=" w-28 py-3 mt-4 text-white bg-black" type="submit">
+      <button
+        className=" w-28 py-3 mt-4 text-white hover:bg-teal-700 bg-black"
+        type="submit"
+      >
         ADD
       </button>
     </form>
