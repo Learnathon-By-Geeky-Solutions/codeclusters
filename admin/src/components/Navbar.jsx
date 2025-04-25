@@ -16,13 +16,13 @@ const Navbar = ({ setToken, token }) => {
       <div className="flex items-center gap-2">
         <button
           onClick={() => setShowChangePassword(true)}
-          className="bg-gray-100 hover:text-white  text-gray-700 border border-dashed border-zinc-500 px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
+          className="bg-gray-100 hover:text-white hover:bg-teal-600  text-gray-700 border border-dashed border-zinc-500 px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
         >
           Change Password
         </button>
         <button
           onClick={() => setToken("")}
-          className="bg-gray-600  text-white px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
+          className="bg-gray-600  text-white  hover:bg-red-600  px-4 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm"
         >
           Logout
         </button>

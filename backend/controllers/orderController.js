@@ -109,7 +109,6 @@ const placeOrderStripe = async (req, res) => {
       payment: false,
       date: Date.now(),
     };
-
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
@@ -149,11 +148,66 @@ const placeOrderStripe = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+const makePaymentStripe = async (req, res) => {
+  const userId = req.userId;
+  const { item, amount, orderId } = req.body;
+  const { origin } = req.headers;
+  if (!item || typeof item !== "object") {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid item: Item must be an object",
+    });
+  }
+  if (!isValidUserId(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
 
+  if (!isValidAmount(amount)) {
+    return res.status(400).json({ success: false, message: "Invalid amount" });
+  }
+  if (!mongoose.isValidObjectId(orderId)) {
+    return res.status(400).json({ success: false, message: "Invalid orderId" });
+  }
+  try {
+    const line_items = [
+      {
+        price_data: {
+          currency: currency,
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.sellingPrice * 100,
+        },
+        quantity: item.quantity,
+      },
+    ];
+    line_items.push({
+      price_data: {
+        currency: currency,
+        product_data: {
+          name: "Delivery charges",
+        },
+        unit_amount: deliveryCharge * 100,
+      },
+      quantity: 1,
+    });
+    const session = await stripe.checkout.sessions.create({
+      success_url: `${origin}/verifyPayment?success=true&orderId=${orderId}`,
+      cancel_url: `${origin}/verifyPayment?success=false&orderId=${orderId}`,
+      line_items,
+      mode: "payment",
+    });
+    res.status(200).json({ success: true, session_url: session.url });
+  } catch (error) {
+    console.log("Error in MakePaymentStripe controller", error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
 const verifyStripe = async (req, res) => {
   const userId = req.userId;
 
   const { orderId, success } = req.body;
+
   if (!mongoose.isValidObjectId(userId)) {
     return res.status(400).json({ success: false, message: "Invalid userId" });
   }
@@ -166,6 +220,7 @@ const verifyStripe = async (req, res) => {
         { _id: { $eq: orderId } },
         { payment: true }
       );
+
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
       res.status(200).json({ success: true });
@@ -187,14 +242,42 @@ const allOrders = async (req, res) => {
   }
 
   try {
-    const { page = 1, limit = 20 } = req.query;
-    const totalOrders = await orderModel.countDocuments();
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      paymentMethod,
+      paymentStatus,
+    } = req.query;
+    const skip = (page - 1) * limit;
+    let filter = {};
+    if (status) {
+      filter.status = { $in: status.split(",") };
+    }
+    if (paymentMethod) {
+      filter.paymentMethod = { $in: paymentMethod.split(",") };
+    }
+    if (paymentStatus) {
+      const paymentMap = {
+        Done: true,
+        Pending: false,
+      };
+
+      const booleanPayments = paymentStatus
+        .split(",")
+        .map((p) => paymentMap[p]);
+      filter.payment = { $in: booleanPayments };
+    }
+
+    const orders = await orderModel
+      .find(filter)
+      .skip(skip)
+      .sort({ _id: -1 })
+      .limit(parseInt(limit));
+
+    const totalOrders = await orderModel.countDocuments(filter);
+    console.log(totalOrders);
     const totalPages = Math.ceil(totalOrders / limit);
-
-    const effectivePage = totalPages - parseInt(page) + 1;
-    const skip = Math.max((effectivePage - 1) * limit, 0);
-    const orders = await orderModel.find({}).skip(skip).limit(parseInt(limit));
-
     res.status(200).json({
       success: true,
       orders,
@@ -225,6 +308,61 @@ const userOrders = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+const cancelOrder = async (req, res) => {
+  const userId = req.userId;
+  const { orderId } = req.body;
+
+  if (!isValidUserId(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+
+  if (!mongoose.isValidObjectId(orderId)) {
+    return res.status(400).json({ success: false, message: "Invalid orderId" });
+  }
+
+  try {
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    if (order.userId.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "Unauthorized" });
+    }
+
+    if (
+      order.status === "shipped" ||
+      order.status === "Out for delivery" ||
+      order.status === "delivered"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot cancel order that is already shipped or delivered",
+      });
+    }
+
+    if (order.cancelled) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order is already cancelled" });
+    }
+
+    order.cancelled = true;
+    await order.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Order Cancellation is in process" });
+  } catch (error) {
+    console.error("Error in cancelOrder controller", error.message);
+    return res
+      .status(500)
+      .json({ success: false, message: "Something went wrong" });
+  }
+};
 
 const updateStatus = async (req, res) => {
   const adminId = req.adminId;
@@ -241,6 +379,7 @@ const updateStatus = async (req, res) => {
       "Shipped",
       "Out for delivery",
       "Delivered",
+      "Cancelled",
     ];
     if (typeof orderId !== "string") {
       return res
@@ -394,4 +533,6 @@ export {
   updateStatus,
   placeOrderStripe,
   verifyStripe,
+  makePaymentStripe,
+  cancelOrder,
 };
