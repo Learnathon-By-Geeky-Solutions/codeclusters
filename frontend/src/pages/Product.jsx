@@ -68,7 +68,6 @@ const Product = () => {
       comment: newReview.comment,
       email: user?.email || newReview.email,
     };
-    console.log(reviewData);
     try {
       const res = await axios.post(
         `${backendUrl}/api/review/addReview`,
