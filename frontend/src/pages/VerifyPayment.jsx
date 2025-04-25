@@ -26,7 +26,6 @@ const VerifyPayment = () => {
         navigate("/orders");
       } else navigate("/cart");
     } catch (error) {
-      console.log(error.message);
       toast.error(error.message);
     }
   };

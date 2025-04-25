@@ -258,17 +258,20 @@ const allOrders = async (req, res) => {
       "Cancelled",
     ];
 
-    if (typeof status !== "string" || !allowedStatuses.includes(status)) {
+    if (
+      status &&
+      (typeof status !== "string" || !allowedStatuses.includes(status))
+    ) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid status value" });
     }
 
     const allowedPaymentMethod = ["COD", "Stripe"];
-
     if (
-      typeof status !== "string" ||
-      !allowedPaymentMethod.includes(paymentMethod)
+      paymentMethod &&
+      (typeof status !== "string" ||
+        !allowedPaymentMethod.includes(paymentMethod))
     ) {
       return res
         .status(400)
@@ -301,7 +304,6 @@ const allOrders = async (req, res) => {
       .limit(parseInt(limit));
 
     const totalOrders = await orderModel.countDocuments(filter);
-    console.log(totalOrders);
     const totalPages = Math.ceil(totalOrders / limit);
     res.status(200).json({
       success: true,
