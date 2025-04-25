@@ -1,0 +1,47 @@
+name: Build 
+ 
+on: 
+   push:
+       branches: [main]
+   pull_request:
+       types: [opened, synchronize, reopened]
+           
+ 
+ 
+ 
+jobs:
+  sonarcloud:
+     name: Analyze with SonarCloud
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+         with:
+           fetch-depth: 0  # Needed for SonarCloud to analyze the code properly
+ 
+       - name: Setup Node.js
+         uses: actions/setup-node@v3
+         with:
+           node-version: "20.x"
+ 
+       - name: Install frontend dependencies
+         working-directory: frontend
+         run: npm install
+
+
+       - name: Install admin dependencies
+         working-directory: admin
+         run: npm install
+ 
+       - name: Install backend dependencies
+         working-directory: backend
+         run: npm install
+       - name: Run admin tests with coverage
+         working-directory: admin
+         run: 
+           npm run coverage
+       - name: SonarCloud Scan
+         uses: SonarSource/sonarcloud-github-action@v2
+         env:
+           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+           

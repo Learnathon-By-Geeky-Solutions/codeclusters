@@ -20,8 +20,8 @@ const limiter = RateLimit({
   max: 100,
 });
 
-orderRouter.post("/list", adminAuth, allOrders);
-orderRouter.post("/status", adminAuth, updateStatus);
+orderRouter.post("/list", adminAuth, limiter, allOrders);
+orderRouter.post("/status", adminAuth, limiter, updateStatus);
 
 orderRouter.post("/place", userAuth, placeOrder);
 orderRouter.post("/cancelOrder", userAuth, cancelOrder);
