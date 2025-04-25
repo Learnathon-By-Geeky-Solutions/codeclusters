@@ -265,7 +265,7 @@ const Order = ({ token }) => {
                 value={order.status}
                 className="p-2 font-semibold"
               >
-                <option value="Order placed">Order placed</option>
+                <option value="Order Placed">Order Placed</option>
                 <option value="Packing">Packing</option>
                 <option value="Shipped">Shipped</option>
                 <option value="Out for delivery">Out for delivery</option>

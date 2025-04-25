@@ -15,6 +15,7 @@ const Login = () => {
   const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState(location.state?.email || "");
   const [loading, setLoading] = useState(false);
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -25,6 +26,7 @@ const Login = () => {
         email,
         password,
       });
+
       setLoading(false);
       if (res.data.success) {
         setUser(res.data);
@@ -47,6 +49,7 @@ const Login = () => {
         }
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       toast.error(error.response.data.message);
     }
