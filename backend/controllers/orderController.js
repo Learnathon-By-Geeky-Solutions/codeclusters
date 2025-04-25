@@ -376,7 +376,7 @@ const updateStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body;
     const allowedStatuses = [
-      "Order placed",
+      "Order Placed",
       "Packing",
       "Shipped",
       "Out for delivery",
