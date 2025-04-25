@@ -336,7 +336,7 @@ const cancelOrder = async (req, res) => {
     if (
       order.status === "shipped" ||
       order.status === "Out for delivery" ||
-      order.status === "delivered"
+      order.status === "Delivered"
     ) {
       return res.status(400).json({
         success: false,
