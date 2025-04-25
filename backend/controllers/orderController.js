@@ -249,6 +249,31 @@ const allOrders = async (req, res) => {
       paymentMethod,
       paymentStatus,
     } = req.query;
+    const allowedStatuses = [
+      "Order Placed",
+      "Packing",
+      "Shipped",
+      "Out for delivery",
+      "Delivered",
+      "Cancelled",
+    ];
+
+    if (typeof status !== "string" || !allowedStatuses.includes(status)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status value" });
+    }
+
+    const allowedPaymentMethod = ["COD", "Stripe"];
+
+    if (
+      typeof status !== "string" ||
+      !allowedPaymentMethod.includes(paymentMethod)
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid PaymentMethod value" });
+    }
     const skip = (page - 1) * limit;
     let filter = {};
     if (status) {
