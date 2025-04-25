@@ -253,10 +253,12 @@ const allOrders = async (req, res) => {
     const skip = (page - 1) * limit;
     let filter = {};
     if (status) {
-      filter.status = { $in: status.split(",").toString() };
+      filter.status = { $in: status.toString().split(",") };
     }
     if (paymentMethod) {
-      filter.paymentMethod = { $in: paymentMethod.split(",").toString() };
+      filter.paymentMethod = {
+        $in: paymentMethod.toString().split(","),
+      };
     }
     if (paymentStatus) {
       const paymentMap = {
