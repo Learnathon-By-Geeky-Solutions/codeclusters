@@ -70,11 +70,7 @@ const List = ({ token }) => {
             className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 gap-2 bg-gray-100 text-sm"
             key={item._id}
           >
-            <img
-              className="w-12"
-              src={`${backendUrl}/${item.image[0].replace(/\\/g, "/")}`}
-              alt=""
-            />
+            <img className="w-12" src={`${item.image[0]}`} alt="" />
             <p>{item.name}</p>
             <p>{item.category}</p>
             <p>

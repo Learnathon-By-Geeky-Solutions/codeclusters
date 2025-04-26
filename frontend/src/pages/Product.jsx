@@ -135,18 +135,14 @@ const Product = () => {
               >
                 <img
                   alt="productPhoto"
-                  src={`${backendUrl}/${item.replace(/\\/g, "/")}`}
+                  src={`${item}`}
                   className="w-[24%] sm:w-full sm:mb-3 flex-shrink cursor-pointer"
                 />
               </button>
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
-            <img
-              className="w-full h-auto"
-              src={`${backendUrl}/${image.replace(/\\/g, "/")}`}
-              alt=""
-            />
+            <img className="w-full h-auto" src={`${image}`} alt="" />
           </div>
         </div>
 

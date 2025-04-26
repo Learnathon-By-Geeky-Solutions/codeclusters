@@ -8,12 +8,13 @@ import orderRouter from "./routes/orderRoute.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import cartRouter from "./routes/cartRoute.js";
 import { createDefaultAdmin } from "./controllers/userController.js";
+import connectCloudinary from "./config/cloudinary.js";
 
 const app = express();
 app.disable("x-powered-by");
 const port = process.env.PORT || 5000;
 connectDB();
-
+connectCloudinary();
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"

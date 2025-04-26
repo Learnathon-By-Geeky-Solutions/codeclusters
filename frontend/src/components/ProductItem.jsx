@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const ProductItem = ({ id, image, name, price, sellingPrice, bestSeller }) => {
-  const { currency, backendUrl } = useContext(ShopContext);
+  const { currency } = useContext(ShopContext);
   const offPrice = ((price - sellingPrice) * 100) / price;
 
   return (
@@ -14,7 +14,7 @@ const ProductItem = ({ id, image, name, price, sellingPrice, bestSeller }) => {
       <div className="overflow-hidden">
         <img
           className="hover:scale-110 transition ease-in-out"
-          src={`${backendUrl}/${image[0].replace(/\\/g, "/")}`}
+          src={`${image[0]}`}
           alt=""
         />
       </div>
