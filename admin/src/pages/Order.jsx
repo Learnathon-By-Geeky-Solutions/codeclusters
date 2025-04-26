@@ -15,6 +15,8 @@ const Order = ({ token }) => {
   const [status, setStatus] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState([]);
   const [paymentStatus, setPaymentStatus] = useState([]);
+  const [showCancelledOnly, setShowCancelledOnly] = useState(false);
+
   const toggleStatus = (e) => {
     const value = e.target.value;
     setStatus((prev) =>
@@ -54,9 +56,10 @@ const Order = ({ token }) => {
         paymentStatus.length > 0
           ? `&paymentStatus=${paymentStatus.join(",")}`
           : "";
+      const cancelledQuery = `&cancelled=${showCancelledOnly}`;
       const res = await axios.post(
         backendUrl +
-          `/api/order/list?page=${page}&limit=20${statusQuery}${paymentMethodQuery}${paymentStatusQuery}`,
+          `/api/order/list?page=${page}&limit=20${statusQuery}${paymentMethodQuery}${paymentStatusQuery}${cancelledQuery}`,
         {},
         { headers: { token } }
       );
@@ -89,21 +92,42 @@ const Order = ({ token }) => {
 
   useEffect(() => {
     fetchAllOrders(currentPage);
-  }, [currentPage, token, status, paymentMethod, paymentStatus]);
+  }, [
+    currentPage,
+    token,
+    status,
+    paymentMethod,
+    paymentStatus,
+    showCancelledOnly,
+  ]);
   Order.propTypes = {
     token: PropTypes.string.isRequired,
   };
   return (
     <div>
       <div className="min-w-60">
-        <button
-          type="button"
-          onClick={() => {
-            setStatus([]);
-            setPaymentMethod([]);
-            setPaymentStatus([]);
-          }}
-          className={`text-base rounded-full px-4 py-2 bg-gray-200 
+        <div className="flex flex-row gap-2 justify-between">
+          <button
+            type="button"
+            onClick={() => setShowFilter(!showFilter)}
+            className="my-2 text-xl flex items-center cursor-pointer gap-2"
+          >
+            FILTERS{" "}
+            <img
+              className={`h-3 sm:hidden ${showFilter ? "rotate-90 " : ""}`}
+              src={dropdown_icon}
+              alt=""
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setStatus([]);
+              setPaymentMethod([]);
+              setPaymentStatus([]);
+              setShowCancelledOnly(false);
+            }}
+            className={`text-base rounded-full px-4 py-2 sm:px-7 sm:py-2  bg-gray-200 
                ${
                  status.length > 0 ||
                  paymentMethod.length > 0 ||
@@ -111,22 +135,20 @@ const Order = ({ token }) => {
                    ? " "
                    : "hidden"
                }`}
-        >
-          All Orders
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowFilter(!showFilter)}
-          className="my-2 hover:bg-amber-50 text-xl flex items-center cursor-pointer gap-2"
-        >
-          FILTERS{" "}
-          <img
-            className={`h-3 sm:hidden ${showFilter ? "rotate-90 " : ""}`}
-            src={dropdown_icon}
-            alt=""
-          />
-        </button>
-
+          >
+            All Orders
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowCancelledOnly((prev) => !prev)}
+            className={`text-base rounded-full px-4 py-2 sm:px-7 sm:py-2  ${
+              showCancelledOnly ? "bg-green-700" : "bg-red-700"
+            } text-white
+               `}
+          >
+            {showCancelledOnly ? "Show All Products" : "View cancel request"}
+          </button>
+        </div>
         <div
           className={` border border-gray-300 pl-5 py-3 mt-6 ${
             showFilter ? "" : "hidden"

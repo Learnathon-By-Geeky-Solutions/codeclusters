@@ -248,6 +248,7 @@ const allOrders = async (req, res) => {
       status,
       paymentMethod,
       paymentStatus,
+      cancelled,
     } = req.query;
 
     const skip = (page - 1) * limit;
@@ -270,6 +271,11 @@ const allOrders = async (req, res) => {
         .split(",")
         .map((p) => paymentMap[p]);
       filter.payment = { $in: booleanPayments };
+    }
+
+    if (cancelled === "true") {
+      filter.cancelled = true;
+      filter.status = { $ne: "Cancelled" };
     }
 
     const orders = await orderModel
