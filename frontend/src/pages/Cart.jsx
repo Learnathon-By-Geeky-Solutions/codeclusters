@@ -6,15 +6,8 @@ import { assets } from "../assets/assets";
 import CartTotal from "../components/CartTotal";
 import { toast } from "react-toastify";
 const Cart = () => {
-  const {
-    currency,
-    products,
-    cartItems,
-    updateQuantity,
-    navigate,
-    backendUrl,
-    token,
-  } = useContext(ShopContext);
+  const { currency, products, cartItems, updateQuantity, navigate, token } =
+    useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
   const handleCheckout = () => {
@@ -62,11 +55,8 @@ const Cart = () => {
               <div className="flex items-start gap-6">
                 <img
                   className="w-16 sm:w-20"
-                  src={`${backendUrl}/${productData.image[0].replace(
-                    /\\/g,
-                    "/"
-                  )}`}
-                  alt=""
+                  src={`${productData.image[0]}`}
+                  alt="productImage"
                 />
                 <div className="text-xs sm:text-g font-medium">
                   {productData?.name}
