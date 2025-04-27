@@ -9,7 +9,7 @@ const adminAuth = asyncHandler(async (req, res, next) => {
   if (!token) {
     return res.json({
       success: "false",
-      msg: "Not Authorized! Login again!",
+      message: "Not Authorized! Login again!",
     });
   }
   try {

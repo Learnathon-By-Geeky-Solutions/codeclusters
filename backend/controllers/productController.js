@@ -1,7 +1,12 @@
 import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
 import mongoose from "mongoose";
+import csv from "csvtojson";
+import XLSX from "xlsx";
+import fs from "fs";
+
 import { v2 as cloudinary } from "cloudinary";
+
 const addProduct = asyncHandler(async (req, res) => {
   const adminId = req.adminId;
 
@@ -60,6 +65,85 @@ const addProduct = asyncHandler(async (req, res) => {
     res.status(500).json({
       error: "Internal server error",
     });
+  }
+});
+
+const uploadBulkProduct = asyncHandler(async (req, res) => {
+  const adminId = req.adminId;
+
+  if (!mongoose.isValidObjectId(adminId)) {
+    return res.status(400).json({ success: false, message: "Invalid userId" });
+  }
+
+  const file = req.file;
+  if (!file)
+    return res
+      .status(400)
+      .json({ success: false, message: "No file uploaded." });
+
+  let data = [];
+
+  try {
+    if (file.mimetype === "text/csv") {
+      data = await csv().fromFile(file.path);
+    } else if (
+      file.mimetype ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.mimetype === "application/vnd.ms-excel"
+    ) {
+      const workbook = XLSX.readFile(file.path);
+      const sheetName = workbook.SheetNames[0];
+      data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "Unsupported File" });
+    }
+
+    data = data.map((product) => {
+      if (product.bestSeller !== undefined) {
+        product.bestSeller =
+          product.bestSeller === "TRUE" || product.bestSeller === true;
+      }
+
+      if (product.date) {
+        product.date = new Date(parseInt(product.date));
+      }
+
+      const imageArray = [];
+
+      for (let i = 0; i < 4; i++) {
+        const imageKey = `image[${i}]`;
+        if (product[imageKey] && product[imageKey].trim() !== "") {
+          imageArray.push(product[imageKey]);
+        }
+        delete product[imageKey];
+      }
+
+      product.image = imageArray;
+
+      const sizeArray = [];
+
+      for (let i = 0; i < 5; i++) {
+        const sizeKey = `size[${i}]`;
+        if (product[sizeKey] && product[sizeKey].trim() !== "") {
+          sizeArray.push(product[sizeKey]);
+        }
+        delete product[sizeKey];
+      }
+      product.size = sizeArray;
+
+      return product;
+    });
+
+    await productModel.insertMany(data);
+
+    fs.unlinkSync(file.path);
+
+    res.send({ success: true, message: "Data inserted successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting data");
   }
 });
 
@@ -251,4 +335,5 @@ export {
   singleProduct,
   searchProducts,
   updateProduct,
+  uploadBulkProduct,
 };

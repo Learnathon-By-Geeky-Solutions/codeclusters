@@ -6,6 +6,7 @@ import {
   searchProducts,
   singleProduct,
   updateProduct,
+  uploadBulkProduct,
 } from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
@@ -22,6 +23,12 @@ productRouter.post(
     { name: "image4", maxCount: 1 },
   ]),
   addProduct
+);
+productRouter.post(
+  "/uploadBulkProduct",
+  upload.single("file"),
+  adminAuth,
+  uploadBulkProduct
 );
 productRouter.post("/updateProduct", adminAuth, updateProduct);
 productRouter.post("/remove", adminAuth, removeProduct);

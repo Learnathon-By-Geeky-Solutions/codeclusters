@@ -36,10 +36,12 @@ const productSchema = new mongoose.Schema({
   bestSeller: {
     type: Boolean,
     required: true,
+    default: false,
   },
   date: {
     type: Number,
     required: true,
+    default: Date.now(),
   },
 });
 
