@@ -47,7 +47,7 @@ Check out our [Wiki](https://github.com/Learnathon-By-Geeky-Solutions/codecluste
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_codeclusters)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_codeclusters)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=code_smells&style=for-the-badge&color=FFA500)](https://sonarcloud.io/component_measures/domain/CodeSmells?id=Learnathon-By-Geeky-Solutions_codeclusters)
-
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_codeclusters&metric=coverage&style=for-the-badge&color=FF6F61)](https://sonarcloud.io/component_measures/domain/Coverage?id=Learnathon-By-Geeky-Solutions_codeclusters)
 </div>
 
 <!-- ALL Links -->
