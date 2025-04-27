@@ -28,7 +28,6 @@ describe("Add Component", () => {
   it("shows error if no image is uploaded", async () => {
     render(<Add token={mockToken} />);
 
-    // Fill out name and description, but don't upload an image
     fireEvent.change(screen.getByPlaceholderText(/Sweatshirt/i), {
       target: { value: "Product Name" },
     });
@@ -39,7 +38,6 @@ describe("Add Component", () => {
     fireEvent.click(screen.getByText("ADD"));
 
     await waitFor(() => {
-      // Verify if the error toast was called with the correct message
       expect(toast.error).toHaveBeenCalledWith("Image required");
     });
   });
@@ -51,16 +49,11 @@ describe("Add Component", () => {
 
     render(<Add token={mockToken} />);
 
-    // Create dummy image file
     const file = new File(["dummy"], "image.png", { type: "image/png" });
 
-    // Get the input element for the file upload and simulate the change event
     const input = screen.getByLabelText("Upload image 1");
-
-    // Fire the change event to simulate file selection
     fireEvent.change(input, { target: { files: [file] } });
 
-    // Fill out name and description
     fireEvent.change(screen.getByPlaceholderText(/Sweatshirt/i), {
       target: { value: "Test Product" },
     });
@@ -83,10 +76,7 @@ describe("Add Component", () => {
 
     const file = new File(["dummy"], "image.png", { type: "image/png" });
 
-    // Get the input element for the file upload and simulate the change event
     const input = screen.getByLabelText("Upload image 1");
-
-    // Fire the change event to simulate file selection
     fireEvent.change(input, { target: { files: [file] } });
 
     fireEvent.change(screen.getByPlaceholderText(/Sweatshirt/i), {
@@ -100,6 +90,41 @@ describe("Add Component", () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+    });
+  });
+
+  // ✅ New Test for Uploading CSV File
+  it("uploads a CSV file and calls the API", async () => {
+    axios.post.mockResolvedValue({
+      data: { success: true, message: "Bulk upload successful" },
+    });
+
+    render(<Add token={mockToken} />);
+
+    const file = new File(["id,name,price\n1,Product,10"], "products.csv", {
+      type: "text/csv",
+    });
+
+    // Find the file input (by accept attribute)
+    const fileInput = screen.getByLabelText("Upload CSV/XSLX file", {
+      selector: "input",
+    });
+
+    // Simulate file selection
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    // Find and click the Upload button
+    fireEvent.click(screen.getByRole("button", { name: /Upload/i }));
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining("/api/product/uploadBulkProduct"),
+        expect.any(FormData),
+        expect.objectContaining({
+          headers: expect.objectContaining({ token: mockToken }),
+        })
+      );
+      expect(toast.success).toHaveBeenCalledWith("Bulk upload successful");
     });
   });
 });

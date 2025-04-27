@@ -116,19 +116,22 @@ const Add = ({ token }) => {
   };
   return (
     <>
-      <h5>Upload CSV/XSLX file</h5>
-      <div className="flex items-center gap-2 mb-6">
-        <input
-          className="block w-64 text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 py-2 px-3"
-          type="file"
-          ref={fileInputRef}
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          onChange={handleFileChange}
-        />
+      <div className="flex flex-col sm:flex-row  gap-2 mb-6">
+        <label className=" flex flex-col">
+          {" "}
+          Upload CSV/XSLX file{" "}
+          <input
+            className="w-full max-w-[500px] px-3 py-2 text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+            type="file"
+            ref={fileInputRef}
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            onChange={handleFileChange}
+          />
+        </label>
         <button
           onClick={handleUpload}
           type="button"
-          className="py-2 px-6 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-75"
+          className="sm:mt-6 py-2 px-6 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-75"
         >
           Upload
         </button>
