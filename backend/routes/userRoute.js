@@ -5,6 +5,7 @@ import {
   adminLogin,
   userInfo,
   changeAdminPassword,
+  googleLogin,
 } from "../controllers/userController.js";
 import {
   forgotPassword,
@@ -18,6 +19,7 @@ const userRouter = express.Router();
 
 userRouter.post("/register", register);
 userRouter.post("/login", login);
+userRouter.post("/googleLogin", googleLogin);
 userRouter.post("/admin", adminLogin);
 userRouter.post("/admin/changePassword", adminAuth, changeAdminPassword);
 
