@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import validator from "validator";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import user from "../models/userModel.js";
 import generateToken from "../utils/generateJWT.js";
 import admin from "../models/adminModel.js";
@@ -83,7 +84,8 @@ const googleLogin = asyncHandler(async (req, res) => {
       }
     }
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(Math.random().toString(36), salt);
+    const secureRandomString = crypto.randomBytes(32).toString("hex");
+    const hashedPassword = await bcrypt.hash(secureRandomString, salt);
     const newUser = new user({
       name,
       email,
