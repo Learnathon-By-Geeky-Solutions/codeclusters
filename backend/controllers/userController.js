@@ -12,29 +12,34 @@ const login = asyncHandler(async (req, res) => {
 
     const User = await user.findOne({ email });
     if (User) {
-      if (User.verified) {
-        const isPasswordCorrect = await bcrypt.compare(password, User.password);
-        if (isPasswordCorrect) {
-          res.status(201).json({
-            success: true,
-            _id: User._id,
-            name: User.name,
-            email: User.email,
-            token: generateToken(User._id),
-            emailVerified: User.verified,
-          });
-        } else {
-          res.status(200).json({
-            emailVerified: User.verified,
-            error: "Password Incorrect",
-            message: "Password Incorrect",
-          });
+      if (!User.isGoogleAccount) {
+        if (User.verified) {
+          const isPasswordCorrect = await bcrypt.compare(
+            password,
+            User.password
+          );
+          if (isPasswordCorrect) {
+            res.status(201).json({
+              success: true,
+              _id: User._id,
+              name: User.name,
+              email: User.email,
+              token: generateToken(User._id),
+              emailVerified: User.verified,
+            });
+          } else {
+            res.status(200).json({
+              emailVerified: User.verified,
+              error: "Password Incorrect",
+              message: "Password Incorrect",
+            });
+          }
         }
       } else {
         res.status(200).json({
           success: false,
-          emailVerified: false,
-          message: "Email not verified. Verify first",
+          emailVerified: true,
+          message: "Use Google to sign in — it's how you signed up!",
         });
       }
     } else {
@@ -46,6 +51,65 @@ const login = asyncHandler(async (req, res) => {
     console.log("Error in login controller", error.message);
     return res.status(500).json({
       error: "Internal server error",
+    });
+  }
+});
+
+const googleLogin = asyncHandler(async (req, res) => {
+  try {
+    const { email, name } = req.body;
+    if (!email || !name) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and name are required" });
+    }
+    const User = await user.findOne({ email });
+
+    if (User) {
+      if (!User.isGoogleAccount) {
+        return res.json({
+          success: false,
+          message: "You have Already registered. Use your password to login!",
+        });
+      } else {
+        return res.status(201).json({
+          success: true,
+          _id: User._id,
+          name: User.name,
+          email: User.email,
+          token: generateToken(User._id),
+          emailVerified: User.verified,
+        });
+      }
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(Math.random().toString(36), salt);
+    const newUser = new user({
+      name,
+      email,
+      password: hashedPassword, // dummy password
+      verified: true,
+      isGoogleAccount: true,
+    });
+    if (newUser) {
+      await newUser.save();
+      res.status(201).json({
+        success: true,
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        token: generateToken(newUser._id),
+      });
+    } else {
+      res.status(400).json({
+        error: "Invalid user data",
+      });
+    }
+  } catch (error) {
+    console.error("Error in googleLogin Controller" + error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Google login failed. Please try again.",
     });
   }
 });
@@ -206,6 +270,7 @@ const userInfo = asyncHandler(async (req, res) => {
 
 export {
   login,
+  googleLogin,
   register,
   adminLogin,
   userInfo,

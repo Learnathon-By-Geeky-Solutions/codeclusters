@@ -121,7 +121,7 @@ const Add = ({ token }) => {
           {" "}
           Upload CSV/XSLX file{" "}
           <input
-            className="w-full max-w-[500px] px-3 py-2 text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+            className="w-full max-w-[500px] px-3 py-2 text-gray-700 border border-gray-300  cursor-pointer bg-gray-50 focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
             type="file"
             ref={fileInputRef}
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -131,7 +131,7 @@ const Add = ({ token }) => {
         <button
           onClick={handleUpload}
           type="button"
-          className="sm:mt-6 py-2 px-6 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-75"
+          className="sm:mt-6 py-2 px-6 bg-black hover:bg-gray-700 text-white font-semibold  shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-75"
         >
           Upload
         </button>

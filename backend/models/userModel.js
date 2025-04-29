@@ -20,6 +20,11 @@ const userModel = mongoose.Schema(
       required: true,
       default: false,
     },
+    isGoogleAccount: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     cartData: {
       type: Object,
       default: {},

@@ -6,6 +6,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useLocation } from "react-router-dom";
 import BeatLoader from "react-spinners/BeatLoader";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+
 const Login = () => {
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
@@ -91,7 +94,32 @@ const Login = () => {
       toast.error(error.message);
     }
   };
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
+    try {
+      console.log("Creden ", credentialResponse);
+      const decoded = jwtDecode(credentialResponse.credential);
+      console.log(decoded);
+      const { email, name } = decoded;
+      console.log("email ", email);
+      console.log("name ", name);
 
+      const res = await axios.post(`${backendUrl}/api/user/googleLogin`, {
+        email,
+        name,
+      });
+      console.log(res);
+      if (res.data.success) {
+        setUser(res.data);
+        localStorage.setItem("token", res.data.token);
+        setToken(res.data.token);
+      } else {
+        toast.error(res.data.message || "Google login failed");
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      toast.error("Google login failed");
+    }
+  };
   useEffect(() => {
     if (token) {
       if (page === "cart") {
@@ -219,6 +247,15 @@ const Login = () => {
             </button>
           </form>
         )}
+        <hr className="mt-4 w-24 mx-auto border-t-2 border-gray-500" />
+        <div className="w-full  p-4">
+          <GoogleLogin
+            onSuccess={(credentialResponse) =>
+              handleGoogleLoginSuccess(credentialResponse)
+            }
+            onError={() => toast.error("Google login failed")}
+          />
+        </div>
       </div>
     </div>
   );
