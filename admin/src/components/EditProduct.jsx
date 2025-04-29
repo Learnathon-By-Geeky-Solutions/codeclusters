@@ -86,7 +86,7 @@ const EditProduct = ({ isOpen, onClose, product, token }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-80%">
         <form
           className="flex flex-col w-full items-start gap-3"

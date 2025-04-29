@@ -86,7 +86,7 @@ const List = ({ token }) => {
               </button>
               <button
                 onClick={() => handleClick(item)}
-                className="text-center w-[15%] bg-green-500 md:text-center md:w-full cursor-pointer hover:bg-red-700  rounded-full text-xl "
+                className="text-center w-[15%] bg-green-500 md:text-center md:w-full cursor-pointer hover:bg-red-700  rounded-full text-xl"
               >
                 <img className="w-6 h-6 m-auto p-1" src={editIcon} alt="" />
               </button>

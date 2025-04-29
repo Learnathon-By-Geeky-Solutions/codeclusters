@@ -23,9 +23,9 @@ const limiter = RateLimit({
 orderRouter.post("/list", adminAuth, limiter, allOrders);
 orderRouter.post("/status", adminAuth, limiter, updateStatus);
 
-orderRouter.post("/place", userAuth, placeOrder);
-orderRouter.post("/cancelOrder", userAuth, cancelOrder);
-orderRouter.post("/stripe", userAuth, placeOrderStripe);
+orderRouter.post("/place", userAuth, limiter, placeOrder);
+orderRouter.post("/cancelOrder", userAuth, limiter, cancelOrder);
+orderRouter.post("/stripe", userAuth, limiter, placeOrderStripe);
 orderRouter.post("/makePaymentStripe", userAuth, makePaymentStripe);
 
 //user feature
