@@ -9,7 +9,7 @@ The following ERD was made using [app.eraser.io diagram maker](https://app.erase
 title YourShop Data Model
 
 // define tables
-admin [icon: user, color: red] {
+admin {
   id string pk
   email string
   password string
@@ -17,18 +17,19 @@ admin [icon: user, color: red] {
   updatedAt timestamp
 }
 
-user [icon: user, color: green] {
+user  {
   id string pk
   name string
   email string unique
   password string
   verified boolean
   cartData object
+  isGoogleAccount boolean
   createdAt timestamp
   updatedAt timestamp
 }
 
-order [icon: shopping-cart, color: orange] {
+order  {
   id string pk
   userId string fk
   items array
@@ -37,10 +38,11 @@ order [icon: shopping-cart, color: orange] {
   status string
   paymentMethod string
   payment boolean
+  cancelled boolean
   date number
 }
 
-otp [icon: key, color: purple] {
+otp {
   id string pk
   email string
   otp string
@@ -49,7 +51,7 @@ otp [icon: key, color: purple] {
   expiry date
 }
 
-product [icon: box, color: blue] {
+product  {
   id string pk
   name string
   description string
@@ -63,7 +65,7 @@ product [icon: box, color: blue] {
   date number
 }
 
-review [icon: star, color: yellow] {
+review {
   id string pk
   productId string fk
   email string

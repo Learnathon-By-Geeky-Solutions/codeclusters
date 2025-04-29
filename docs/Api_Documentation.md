@@ -51,7 +51,7 @@ Authorization: Bearer <your_token>
 
 ---
 
-## Base URL
+## ROUTE
 
 `/api/user`
 
@@ -102,6 +102,85 @@ Authorization: Bearer <your_token>
 - `500 Internal Server Error`: Server error.
 
 ---
+
+### 📌 Google Login API
+
+## Endpoint
+
+`POST /api/auth/google-login`
+
+## Description
+
+This endpoint handles user authentication via Google login:
+
+- If the user **already exists** and is a **Google-registered account**, it logs them in.
+- If the user **exists** but registered using **email/password**, login is denied with a suggestion to use the password.
+- If the user **does not exist**, a new user account is created using the provided `email` and `name`.
+
+---
+
+## Request Body
+
+```json
+{
+  "email": "user@example.com",
+  "name": "John Doe"
+}
+```
+
+## Responses
+
+### ✅ Success: Existing Google User Login
+
+```json
+{
+  "success": true,
+  "_id": "user_id_here",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "token": "jwt_token_here",
+  "emailVerified": true
+}
+```
+
+### ✅ Success: New Google User Registered
+
+```json
+{
+  "success": true,
+  "_id": "new_user_id_here",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "token": "jwt_token_here"
+}
+```
+
+### ❌ Error: Email or Name Missing
+
+```json
+{
+  "success": false,
+  "message": "Email and name are required"
+}
+```
+
+### ❌ Error: Non-Google Registered User Tries Google Login
+
+```json
+{
+  "success": false,
+  "message": "You have Already registered. Use your password to login!"
+}
+```
+
+### ❌ Error: Server/Database Error
+
+```json
+{
+  "success": false,
+  "message": "Google login failed. Please try again."
+}
+```
 
 ### 👨‍💻 Admin Login
 
@@ -192,7 +271,7 @@ ADMIN_PASSWORD=yourpassword
 
 # OTP and Password Reset API Documentation
 
-## Base URL
+## ROUTE
 
 `/api/user`
 
@@ -203,12 +282,6 @@ Make sure you have the following environment variables defined in your `.env` fi
 ```env
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_password
-```
-
-## Dependencies
-
-```bash
-npm install express-async-handler validator crypto bcrypt nodemailer dotenv
 ```
 
 **Endpoint:** `POST /verifyEmail`  
@@ -338,7 +411,7 @@ npm install express-async-handler validator crypto bcrypt nodemailer dotenv
 
 # Product API Documentation
 
-## Base URL
+## ROUTE
 
 `/api/product`
 
@@ -511,7 +584,7 @@ npm install express-async-handler validator crypto bcrypt nodemailer dotenv
 
 # 📦 Order API Documentation
 
-## Base URL
+## ROUTE
 
 `/api/order`
 
@@ -751,7 +824,7 @@ When order status is updated, a styled email is sent to the customer using **nod
 
 # Review API Documentation
 
-**Base URl:** `api/review`
+**ROUTE:** `api/review`
 
 ---
 
@@ -861,7 +934,7 @@ Some routes require authentication via **Bearer Token**.
 Authorization: Bearer <your_token>
 ```
 
-## Base URL
+## ROUTE
 
 /api/cart
 
