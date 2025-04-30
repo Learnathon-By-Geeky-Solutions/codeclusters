@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 py-4 ">
         <div className="grid grid-cols-1 sm:grid-cols-6 gap-8">
           <div className="sm:col-span-3 space-y-4">
-            <h3 className="text-xl font-bold">Company Name</h3>
+            <h3 className="text-xl font-bold">YourShop</h3>
             <p className="text-sm">
               Creating amazing experiences and building the future of web
               development.
