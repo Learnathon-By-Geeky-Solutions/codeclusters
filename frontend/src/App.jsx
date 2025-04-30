@@ -20,6 +20,8 @@ import VerifyPayment from "./pages/VerifyPayment";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOTP from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
+import ExploreJobs from "./pages/ExploreJobs";
+import StoresShop from "./pages/StoresShop.jsx";
 const App = () => {
   return (
     <div className="px-3 sm:px-[2vw] md:px-[4vw] lg:px-[7vw]">
@@ -41,6 +43,8 @@ const App = () => {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/verifyOtp/:otpFor" element={<VerifyOTP />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/exploreJobs" element={<ExploreJobs />} />
+        <Route path="/storeShop" element={<StoresShop/>} /> 
       </Routes>
       <Footer />
     </div>
