@@ -11,12 +11,14 @@ const List = ({ token }) => {
   const [list, setList] = useState([]);
   const [showUpdate, setShowUpdate] = useState(false);
   const [product, setProduct] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const fetchList = async () => {
     try {
-      const res = await axios.get(backendUrl + "/api/product/list");
+      const res = await axios.get(`${backendUrl}/api/product/list?page=${currentPage}&limit=20`);
       if (res.data.success) {
         setList(res.data.products);
+        setTotalPages(res.data.totalPages);
       } else toast.error(res.data.message);
     } catch (error) {
       console.log(error);
@@ -48,7 +50,7 @@ const List = ({ token }) => {
 
   useEffect(() => {
     fetchList();
-  }, []);
+  }, [currentPage]);
   List.propTypes = {
     token: PropTypes.string.isRequired,
   };
@@ -94,6 +96,25 @@ const List = ({ token }) => {
           </div>
         ))}
       </div>
+      <div className="flex justify-center mt-5">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 mx-2">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className="px-4 py-2 mx-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
       <EditProduct
         isOpen={showUpdate}
         onClose={() => setShowUpdate(false)}
