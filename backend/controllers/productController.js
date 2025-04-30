@@ -202,7 +202,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const listProduct = asyncHandler(async (req, res) => {
   try {
-    const { page = 1, limit = 20, category, subCategory, sort } = req.query;
+    const { page = 1, limit = 20, category, subCategory, sort = "relevant"} = req.query;
     const skip = (page - 1) * limit;
     let filter = {};
 
@@ -217,6 +217,7 @@ const listProduct = asyncHandler(async (req, res) => {
     let sortOption = {};
     if (sort === "lowHigh") sortOption.sellingPrice = 1;
     if (sort === "highLow") sortOption.sellingPrice = -1;
+    if (sort === "relevant") sortOption._id = -1;
 
     const products = await productModel
       .find(filter)
