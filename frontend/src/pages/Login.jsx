@@ -96,12 +96,9 @@ const Login = () => {
   };
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
-      console.log("Creden ", credentialResponse);
       const decoded = jwtDecode(credentialResponse.credential);
-      console.log(decoded);
+
       const { email, name } = decoded;
-      console.log("email ", email);
-      console.log("name ", name);
 
       const res = await axios.post(`${backendUrl}/api/user/googleLogin`, {
         email,
